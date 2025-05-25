@@ -1,0 +1,69 @@
+<?php
+    include '../includes/official/official_sidebar.php';
+
+    // Use a prepared statement to fetch logs
+    $query = $connection->prepare("SELECT * FROM `aid_requests_logs` WHERE `approved_id` = ? ORDER BY `timestamp` DESC");
+    $query->execute([$user_id]);
+    $history_logs = $query->fetchAll(PDO::FETCH_ASSOC);
+
+    echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
+
+?>
+
+<!-- Page Heading -->
+<h1 class="h3 mb-2 text-gray-800">Tables</h1>
+<p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
+    For more information about DataTables, please visit the <a target="_blank"
+        href="https://datatables.net">official DataTables documentation</a>.</p>
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">
+            <i class="fas fa-users"></i> History Logs
+        </h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped align-middle" id="dataTable" width="100%" cellspacing="0">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Account ID</th>
+                        <th>Name</th>
+                        <th>Approved By</th>
+                        <th>Activity</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tfoot class="thead-dark">
+                    <tr>
+                    <th>#</th>
+                        <th>Account ID</th>
+                        <th>Name</th>
+                        <th>Approved By</th>
+                        <th>Activity</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    <?php
+                    $count = 1;
+                    foreach ($history_logs as $logs):
+                    ?>
+                        <tr>
+                            <td><?php echo $count++; ?></td>
+                            <td><?php echo ($logs['beneficiary_id']); ?></td>
+                            <td><?php echo ($logs['beneficiary_name']); ?></td>
+                            <td><?php echo ($logs['approved_by']); ?></td>
+                            <td><?php echo ($logs['activity']); ?></td>
+                            <td><?php echo date('F j, Y g:i A', strtotime($logs['timestamp'])); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<?php include '../includes/footer.php'; ?>
