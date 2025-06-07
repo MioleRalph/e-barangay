@@ -7,14 +7,14 @@
     $select_account->execute([$user_id]);
     $account = $select_account->fetch(PDO::FETCH_ASSOC);
 
-    if (isset($_POST['submit'])) {
+        if (isset($_POST['submit'])) {
         $full_name = $_POST['full_name'];
         $email = $_POST['email'];
         $dob = $_POST['dob'];
         $address = $_POST['address'];
-        $amount = 100; 
-        $status = 'Pending'; 
-        $request_type = 'Financial Assistance'; 
+        $amount = 0; 
+        $status = 'Pending';
+        $request_type = 'Blotter Request';
 
         // Correct order: name, date_of_birth, email, address, amount, date_submitted
         $insert = $connection->prepare("INSERT INTO `file_request` (`user_id`, `name`, `date_of_birth`, `email`, `address`, `amount`, `transaction_type`, `transaction_status`, `date_submitted`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
@@ -22,7 +22,7 @@
 
         // Insert log into resident_request_logs
         $log_stmt = $connection->prepare("INSERT INTO `resident_request_logs` (`account_id`, `name`, `activity`, `activity_type`, `timestamp`) VALUES (?, ?, ?, ?, NOW())");
-        $log_stmt->execute([$user_id, $full_name, 'Requested a Financial Assistance', 'Financial Assistance']);
+        $log_stmt->execute([$user_id, $full_name, 'Requested a Blotter', 'Blotter']);
 
         echo "<script>
                     Swal.fire({
@@ -32,17 +32,18 @@
                         showConfirmButton: false,
                         timer: 1500
                     }).then(() => {
-                        window.location.href = 'financial_assistance.php';
+                        window.location.href = 'blotter.php';
                     });
                 </script>";
     }
+
 ?>
 
 <section>
     <div class="container py-5">
-        <h1 class="text-center mb-4">Certificate of Indigency</h1>
-        <div class="row d-flex justify-content-center">
-            <div class="col-lg-5">
+        <h1 class="text-center mb-4">Blotter Request</h1>
+        <div class="row">
+            <div class="col-lg-4">
                 <div class="card mb-4">
                     <div class="card-body text-center">
                         <img src="../components/img/undraw_profile_1.svg" alt="avatar"
@@ -53,26 +54,11 @@
                             <?php echo isset($account['address']) ? ($account['address']) : 'No address provided'; ?>
                         </p>
                         <hr>
-                        <div class="d-flex justify-content-center align-items-center">
-                            <span class="font-weight-bold mr-2">Total Amount:</span>
-                            <span class="h5 mb-0 text-success">₱100</span>
-                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="col-lg-5">
+            <div class="col-lg-8">
                 <div class="card mb-4">
-                    <div class="card-body text-center">
-                        <img src="../components/gcash_qr.jpeg" alt="avatar"
-                            class="img-fluid mb-3" style="width: 257px;">
-                        
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-10 d-flex justify-content-center">
-                <div class="card mb-4" style="width: 100%; max-width: 1000px;">
                     <div class="card-body">
                         <form action="" method="POST" enctype="multipart/form-data">
                             <!-- name row -->
@@ -130,4 +116,6 @@
 
 
 <?php include '../includes/footer.php'; ?>
+
+
 

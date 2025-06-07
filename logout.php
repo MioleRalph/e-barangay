@@ -49,7 +49,7 @@
     session_unset();
     session_destroy();
 
-    // Redirect to login page
-    header('Location: login.php');
+    // Redirect to landing page
+    header('Location: index.php');
     exit();
 ?>

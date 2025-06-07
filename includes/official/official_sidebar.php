@@ -65,7 +65,8 @@
                 'barangay_clearance' => 'Barangay Clearance',
                 'certificate_of_indigency' => 'Certificate of Indigency',
                 'certificate_of_residency' => 'Certificate of Residency',
-                'financial_assistance' => 'Financial Assistance',
+                'blotter' => 'Blotter',
+                'view_financial_assistance' => 'Financial Assistance',
                 'history_logs' => 'History Logs',
                 // Add more mappings as needed
             ];
@@ -161,7 +162,7 @@
                         <a class="collapse-item" href="barangay_clearance.php"><i class="fas fa-file-alt"></i> Barangay clearance</a>
                         <a class="collapse-item" href="certificate_of_indigency.php"><i class="fas fa-certificate"></i> Certificate of indigency</a>
                         <a class="collapse-item" href="certificate_of_residency.php"><i class="fas fa-home"></i> Certificate of residency</a>
-                        <a class="collapse-item" href="financial_assistance.php"><i class="fas fa-coins"></i> Financial Assistance</a>
+                        <a class="collapse-item" href="blotter.php"><i class="fas fa-book"></i> Blotter</a>
                     </div>
                 </div>
             </li>
@@ -181,6 +182,7 @@
 
                         <div class="collapse-divider"></div>
                         <h6 class="collapse-header">View Announcement:</h6>
+                        <a class="collapse-item" href="view_financial_assistance.php"><i class="fas fa-coins"></i> Financial Assistance</a>
                         <a class="collapse-item" href="view_events.php"><i class="fas fa-calendar-alt"></i> Events</a>
                         <a class="collapse-item" href="view_emergency.php"><i class="fas fa-exclamation-triangle"></i> Emergency</a>
                         <a class="collapse-item" href="view_health.php"><i class="fas fa-heartbeat"></i> Health</a>

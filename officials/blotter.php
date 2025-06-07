@@ -3,8 +3,8 @@
 
     // Use a prepared statement to fetch logs
     $query = $connection->prepare("SELECT * FROM `file_request` WHERE `transaction_type` = ?");
-    $query->execute(['Financial Assistance']);
-    $financial_assistance_requests = $query->fetchAll(PDO::FETCH_ASSOC);
+    $query->execute(['Blotter']);
+    $blotter_requests = $query->fetchAll(PDO::FETCH_ASSOC);
 
     echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
 
@@ -23,7 +23,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: 'Financial Assistance request data is not set or invalid.'
+                        text: 'Blotter request data is not set or invalid.'
                     });
                 </script>";
                 exit();
@@ -47,7 +47,7 @@
                 // Find the correct request from the list using approve_id
                 $beneficiary_id = null;
                 $beneficiary_name = null;
-                foreach ($financial_assistance_requests as $req) {
+                foreach ($blotter_requests as $req) {
                     if ($req['id'] == $approve_id) {
                         $beneficiary_id = $req['user_id'];
                         $beneficiary_name = $req['name'];
@@ -60,17 +60,17 @@
                 }
                 // Log the approval
                 $log_activity = $connection->prepare("INSERT INTO `aid_requests_logs` (`approved_id`, `beneficiary_id`, `beneficiary_name`, `approved_by`, `activity`, `timestamp`) VALUES (?, ?, ?, ?, ?, NOW())");
-                $log_activity->execute([$approved_id, $beneficiary_id, $beneficiary_name, $_SESSION['full_name'], 'Financial Assistance Approved']);
+                $log_activity->execute([$approved_id, $beneficiary_id, $beneficiary_name, $_SESSION['full_name'], 'Request of Blotter Approved']);
 
                 echo "<script>
                     Swal.fire({
                         icon: 'success',
                         title: 'Approved!',
-                        text: 'Financial Assistance request has been approved successfully.',
+                        text: 'Blotter request has been approved successfully.',
                         showConfirmButton: false,
                         timer: 1500
                     }).then(() => {
-                        window.location.href = 'financial_assistance.php';
+                        window.location.href = 'blotter.php';
                     });
                 </script>";
             } else {
@@ -78,7 +78,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Error!',
-                        text: 'Error approving Financial Assistance request.',
+                        text: 'Error approving Blotter request.',
                         showConfirmButton: false,
                         timer: 1500
                     });
@@ -89,7 +89,7 @@
                 Swal.fire({
                     icon: 'warning',
                     title: 'Warning!',
-                    text: 'Financial Assistance request not found!',
+                    text: 'Blotter request not found!',
                     showConfirmButton: false,
                     timer: 1500
                 });
@@ -112,7 +112,7 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
-                            text: 'Financial Assistance request data is not set or invalid.'
+                            text: 'Blotter request data is not set or invalid.'
                         });
                     </script>";
                 exit();
@@ -136,7 +136,7 @@
                 $beneficiary_id = null;
                 $beneficiary_name = null;
                 // Use the original POST reject_id to find the beneficiary, not the overwritten $reject_id
-                foreach ($financial_assistance_requests as $req) {
+                foreach ($blotter_requests as $req) {
                     if ($req['id'] == $_POST['reject_id']) {
                         $beneficiary_id = $req['user_id'];
                         $beneficiary_name = $req['name'];
@@ -155,11 +155,11 @@
                         Swal.fire({
                             icon: 'success',
                             title: 'Rejected!',
-                            text: 'Financial Assistance request has been rejected successfully.',
+                            text: 'Blotter request has been rejected successfully.',
                             showConfirmButton: false,
                             timer: 1500
                         }).then(() => {
-                            window.location.href = 'financial_assistance.php';
+                            window.location.href = 'blotter.php';
                         });
                     </script>";
             } else {
@@ -167,7 +167,7 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Error!',
-                            text: 'Error rejecting Financial Assistance request.',
+                            text: 'Error rejecting Blotter request.',
                             showConfirmButton: false,
                             timer: 1500
                         });
@@ -178,7 +178,7 @@
                     Swal.fire({
                         icon: 'warning',
                         title: 'Warning!',
-                        text: 'Financial Assistance request not found!',
+                        text: 'Blotter request not found!',
                         showConfirmButton: false,
                         timer: 1500
                     });
@@ -237,7 +237,7 @@
                 <tbody>
                     <?php
                     $count = 1;
-                    foreach ($financial_assistance_requests as $logs):
+                    foreach ($blotter_requests as $logs):
                     ?>
                         <tr>
                             <td><?php echo $count++; ?></td>

@@ -1,6 +1,6 @@
 <?php
     include '../includes/resident/resident_sidebar.php';
-    $announcements_list = $connection->query("SELECT * FROM `announcements` WHERE `category` = 'Public Notice'")->fetchAll(PDO::FETCH_ASSOC);
+    $announcements_list = $connection->query("SELECT * FROM `announcements` WHERE `category` = 'Public Notice' AND `status` = 'Active'")->fetchAll(PDO::FETCH_ASSOC);
 
     echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
 
@@ -25,8 +25,6 @@
                         <div class="card-footer bg-light">
                             <div class="d-flex justify-content-between">
                                 <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#view_modal_<?php echo $announcement['id']; ?>">View More</button>
-                                <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#edit_modal_<?php echo $announcement['id']; ?>">Edit</button>
-                                <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#delete_modal_<?php echo $announcement['id']; ?>">Remove</button>
                             </div>
                         </div>
                     </div>

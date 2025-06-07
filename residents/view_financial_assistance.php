@@ -1,8 +1,16 @@
 <?php
     include '../includes/resident/resident_sidebar.php';
-    $announcements_list = $connection->query("SELECT * FROM `announcements` WHERE `category` = 'Events' AND `status` = 'Active'")->fetchAll(PDO::FETCH_ASSOC);
+    $announcements_list = $connection->query("SELECT * FROM `announcements` WHERE `category` = 'Financial Assistance' AND `status` = 'Active'")->fetchAll(PDO::FETCH_ASSOC);
 
     echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
+
+    $uploadDirectory = __DIR__ . '/../uploads/'; // Absolute path to 'uploads' directory
+
+    // Check if the 'uploads' directory is writable
+    if (!is_writable($uploadDirectory)) {
+        echo "<script>Swal.fire('Error', 'Directory is not writable: $uploadDirectory', 'error');</script>";
+        exit;
+    }
 
 ?>
 
@@ -54,7 +62,7 @@
                                         <p><strong>Category:</strong> <?php echo ($announcement['category']); ?></p>
                                         <p><strong>Posted By:</strong> <?php echo ($announcement['posted_by']); ?></p>
                                         <p><strong>Audience:</strong> <?php echo ($announcement['audience']); ?></p>
-                                        <p><strong>Status:</strong> 
+                                        <p><strong>Status:</strong>
                                             <span class="badge bg-<?php echo $announcement['status'] === 'Active' ? 'success' : 'secondary'; ?>">
                                                 <?php echo ($announcement['status']); ?>
                                             </span>
@@ -71,9 +79,9 @@
                     </div>
                 </div>
 
+
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
 </div>
-
 <?php include '../includes/footer.php'; ?>

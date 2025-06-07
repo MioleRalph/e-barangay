@@ -116,6 +116,7 @@
                         <select class="form-control" name="announcement_category" id="announcement_category" required>
                             <option value="" disabled selected>Select category</option>
                             <option value="Events">Events</option>
+                            <option value="Financial Assistance">Financial Assistance</option>
                             <option value="Emergency">Emergency</option>
                             <option value="Health">Health</option>
                             <option value="Public Notice">Public Notice</option>

@@ -55,7 +55,7 @@
             'barangay_clearance.php' => 'Barangay Clearance Request',
             'certificate_of_indigency.php' => 'Certificate of Indigency Request',
             'certificate_of_residency.php' => 'Certificate of Residency Request',
-            'financial_assistance.php' => 'Financial Assistance Request',
+            'blotter.php' => 'Blotter Request',
             'view_events.php' => 'Events',
             'view_emergency.php' => 'Emergency Announcements',
             'view_health.php' => 'Health Announcements',
@@ -140,7 +140,7 @@
                         <a class="collapse-item" href="barangay_clearance.php"><i class="fas fa-file-alt"></i> Barangay clearance</a>
                         <a class="collapse-item" href="certificate_of_indigency.php"><i class="fas fa-certificate"></i> Certificate of indigency</a>
                         <a class="collapse-item" href="certificate_of_residency.php"><i class="fas fa-id-card"></i> Certificate of residency</a>
-                        <a class="collapse-item" href="financial_assistance.php"><i class="fas fa-hand-holding-usd"></i> Financial Assistance</a>
+                        <a class="collapse-item" href="blotter.php"><i class="fas fa-book"></i> Blotter</a>
                     </div>
                 </div>
             </li>
@@ -156,6 +156,7 @@
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">View Announcement:</h6>
+                        <a class="collapse-item" href="view_financial_assistance.php"><i class="fas fa-coins"></i> Financial Assistance</a>
                         <a class="collapse-item" href="view_events.php"><i class="fas fa-calendar-alt"></i> Events</a>
                         <a class="collapse-item" href="view_emergency.php"><i class="fas fa-exclamation-triangle"></i> Emergency</a>
                         <a class="collapse-item" href="view_health.php"><i class="fas fa-heartbeat"></i> Health</a>
@@ -184,7 +185,7 @@
 
             <!-- barangay officials page -->
             <li class="nav-item">
-                <a class="nav-link" href="">
+                <a class="nav-link" href="#">
                     <i class="fas fa-user-tie"></i>
                     <span>Barangay officials</span>
                 </a>

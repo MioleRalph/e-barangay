@@ -60,7 +60,7 @@
                 }
                 // Log the approval
                 $log_activity = $connection->prepare("INSERT INTO `aid_requests_logs` (`approved_id`, `beneficiary_id`, `beneficiary_name`, `approved_by`, `activity`, `timestamp`) VALUES (?, ?, ?, ?, ?, NOW())");
-                $log_activity->execute([$approved_id, $beneficiary_id, $beneficiary_name, $_SESSION['full_name'], 'Financial Assistance Approved']);
+                $log_activity->execute([$approved_id, $beneficiary_id, $beneficiary_name, $_SESSION['full_name'], 'Request of Certificate of Indigency Approved']);
 
                 echo "<script>
                     Swal.fire({
