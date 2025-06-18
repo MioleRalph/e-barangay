@@ -2,7 +2,7 @@
     include '../includes/official/official_sidebar.php';
 
     // Use a prepared statement to fetch logs
-    $query = $connection->prepare("SELECT * FROM `logs` WHERE `user_id` = ?");
+    $query = $connection->prepare("SELECT * FROM `logs` WHERE `user_id` = ? ORDER BY `timestamp` DESC");
     $query->execute([$user_id]);
     $official_logs = $query->fetchAll(PDO::FETCH_ASSOC);
 

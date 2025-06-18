@@ -1,7 +1,7 @@
 <?php
     include '../includes/resident/resident_sidebar.php';
 
-    $query = $connection->prepare("SELECT * FROM `resident_request_logs` WHERE `account_id` = ?");
+    $query = $connection->prepare("SELECT * FROM `resident_request_logs` WHERE `account_id` = ? ORDER BY `timestamp` DESC");
     $query->execute([$user_id]);
     $resident_logs = $query->fetchAll(PDO::FETCH_ASSOC);
 

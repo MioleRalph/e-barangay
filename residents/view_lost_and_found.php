@@ -1,6 +1,6 @@
 <?php
     include '../includes/resident/resident_sidebar.php';
-    $announcements_list = $connection->query("SELECT * FROM `announcements` WHERE `category` = 'Lost & Found' AND `status` = 'Active'")->fetchAll(PDO::FETCH_ASSOC);
+    $announcements_list = $connection->query("SELECT * FROM `announcements` WHERE `category` = 'Lost & Found' AND `status` = 'Active' ORDER BY `created_at` DESC")->fetchAll(PDO::FETCH_ASSOC);
 
     echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
 

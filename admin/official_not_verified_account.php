@@ -1,7 +1,7 @@
 <?php 
 
     include '../includes/admin/admin_sidebar.php';
-    $verified_accounts = $connection->query("SELECT * FROM `accounts` WHERE `verification_status` = 'not verified' AND `user_type` = '3'")->fetchAll(PDO::FETCH_ASSOC);
+    $verified_accounts = $connection->query("SELECT * FROM `accounts` WHERE `verification_status` = 'not verified' AND `user_type` = '3' ORDER BY `date_registered` DESC")->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 

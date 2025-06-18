@@ -1,7 +1,7 @@
 <?php
     include '../includes/resident/resident_sidebar.php';
 
-    $query = $connection->prepare("SELECT * FROM `file_request` WHERE `user_id` = ?");
+    $query = $connection->prepare("SELECT * FROM `file_request` WHERE `user_id` = ? ORDER BY `date_submitted` DESC");
     $query->execute([$user_id]);
     $request_status = $query->fetchAll(PDO::FETCH_ASSOC);
 

@@ -1,7 +1,7 @@
 <?php 
     include '../includes/admin/admin_sidebar.php'; 
 
-    $announcement_list = $connection->query("SELECT * FROM `announcements`")->fetchAll(PDO::FETCH_ASSOC);
+    $announcement_list = $connection->query("SELECT * FROM `announcements` ORDER BY `created_at` DESC")->fetchAll(PDO::FETCH_ASSOC);
 
     echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
 

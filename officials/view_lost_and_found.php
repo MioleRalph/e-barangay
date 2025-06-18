@@ -1,6 +1,6 @@
 <?php
     include '../includes/official/official_sidebar.php';
-    $announcements_list = $connection->query("SELECT * FROM `announcements` WHERE `category` = 'Lost & Found'")->fetchAll(PDO::FETCH_ASSOC);
+    $announcements_list = $connection->query("SELECT * FROM `announcements` WHERE `category` = 'Lost & Found' ORDER BY `created_at` DESC")->fetchAll(PDO::FETCH_ASSOC);
 
     echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
 

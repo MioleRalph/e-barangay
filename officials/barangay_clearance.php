@@ -45,22 +45,27 @@
                 }
 
                 // Find the correct request from the list using approve_id
-                $beneficiary_id = null;
+                $account_id = null;
                 $beneficiary_name = null;
                 foreach ($barangay_clearance_requests as $req) {
                     if ($req['id'] == $approve_id) {
-                        $beneficiary_id = $req['user_id'];
+                        $account_id = $req['user_id'];
                         $beneficiary_name = $req['name'];
                         break;
                     }
                 }
-                if (empty($beneficiary_id) || empty($beneficiary_name)) {
+                if (empty($account_id) || empty($beneficiary_name)) {
                     echo '<script>Swal.fire({icon: "error", title: "Error", text: "Beneficiary information is missing or invalid."});</script>';
                     exit();
                 }
                 // Log the approval
                 $log_activity = $connection->prepare("INSERT INTO `aid_requests_logs` (`approved_id`, `beneficiary_id`, `beneficiary_name`, `approved_by`, `activity`, `timestamp`) VALUES (?, ?, ?, ?, ?, NOW())");
-                $log_activity->execute([$approved_id, $beneficiary_id, $beneficiary_name, $_SESSION['full_name'], 'Request Barangay Clearance Approved']);
+                $log_activity->execute([$approved_id, $account_id, $beneficiary_name, $_SESSION['full_name'], 'Request Barangay Clearance Approved']);
+
+                // Insert notification for the resident
+                $notification_message = "Your Barangay Clearance request has been approved.";
+                $insert_notification = $connection->prepare("INSERT INTO `notifications` (`resident_id`, `message`, `is_read`, `resident_type`, `created_at`) VALUES (?, ?, '0', 'null', NOW())");
+                $insert_notification->execute([$account_id, $notification_message]);
 
                 echo "<script>
                     Swal.fire({
@@ -133,24 +138,29 @@
                     exit();
                 }
 
-                $beneficiary_id = null;
+                $account_id = null;
                 $beneficiary_name = null;
                 // Use the original POST reject_id to find the beneficiary, not the overwritten $reject_id
                 foreach ($barangay_clearance_requests as $req) {
                     if ($req['id'] == $_POST['reject_id']) {
-                        $beneficiary_id = $req['user_id'];
+                        $account_id = $req['user_id'];
                         $beneficiary_name = $req['name'];
                         break;
                     }
                 }
-                if (empty($beneficiary_id) || empty($beneficiary_name)) {
+                if (empty($account_id) || empty($beneficiary_name)) {
                     echo '<script>Swal.fire({icon: "error", title: "Error", text: "Beneficiary information is missing or invalid."});</script>';
                     exit();
                 }
                 // Log the rejection
                 $log_activity = $connection->prepare("INSERT INTO `aid_requests_logs` (`approved_id`, `beneficiary_id`, `beneficiary_name`, `approved_by`, `activity`, `timestamp`) VALUES (?, ?, ?, ?, ?, NOW())");
-                $log_activity->execute([$reject_id,  $beneficiary_id, $beneficiary_name, $_SESSION['full_name'], 'Barangay Clearance Rejected']);
+                $log_activity->execute([$reject_id,  $account_id, $beneficiary_name, $_SESSION['full_name'], 'Barangay Clearance Rejected']);
 
+                // Insert notification for the resident
+                $notification_message = "Your Barangay Clearance request has been rejected.";
+                $insert_notification = $connection->prepare("INSERT INTO `notifications` (`resident_id`, `message`, `is_read`, `resident_type`, `created_at`) VALUES (?, ?, '0', 'null', NOW())");
+                $insert_notification->execute([$account_id, $notification_message]);
+                
                 echo "<script>
                         Swal.fire({
                             icon: 'success',

@@ -6,7 +6,7 @@
                             FROM `accounts` 
                             LEFT JOIN `roles` ON accounts.user_type = roles.id 
                             WHERE `user_type` = '3'
-                        ")->fetchAll(PDO::FETCH_ASSOC);
+                            ORDER BY `date_registered` DESC")->fetchAll(PDO::FETCH_ASSOC);
 
     echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
 
