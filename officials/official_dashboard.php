@@ -29,7 +29,7 @@
             <div class="card-body">
                 Manage Requests
                 <div class="text-white-50 small">View and handle pending requests</div>
-                <a href="#" class="btn btn-light btn-sm mt-2">Go to Requests</a>
+                <a href="aid_requests.php" class="btn btn-light btn-sm mt-2">Go to Requests</a>
             </div>
         </div>
     </div>
@@ -51,7 +51,7 @@
             <div class="card-body">
                 Update Profile
                 <div class="text-white-50 small">Edit your account details</div>
-                <a href="#" class="btn btn-light btn-sm mt-2">Go to Profile</a>
+                <a href="profile.php" class="btn btn-light btn-sm mt-2">Go to Profile</a>
             </div>
         </div>
     </div>

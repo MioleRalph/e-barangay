@@ -41,7 +41,7 @@
 
 <section>
     <div class="container py-5">
-        <h1 class="text-center mb-4">Financial Assistance</h1>
+        <h1 class="text-center mb-4">Certificate of Indigency</h1>
         <div class="row">
             <div class="col-lg-4">
                 <div class="card mb-4">

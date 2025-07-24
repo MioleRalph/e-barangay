@@ -191,14 +191,6 @@
                 </a>
             </li>
 
-            <!-- barangay officials page -->
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-user-tie"></i>
-                    <span>Barangay officials</span>
-                </a>
-            </li>
-
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
 

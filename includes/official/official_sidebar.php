@@ -140,14 +140,6 @@
                 </a>
             </li>
 
-            <!-- barangay officials list page -->
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-user-tie"></i>
-                    <span>Brgy. Officials</span>
-                </a>
-            </li>
-
             <!-- Assistance Requests page -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAssistance"

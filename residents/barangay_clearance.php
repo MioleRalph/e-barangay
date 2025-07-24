@@ -42,7 +42,7 @@
 
 <section>
     <div class="container py-5">
-        <h1 class="text-center mb-4">Certificate of Indigency</h1>
+        <h1 class="text-center mb-4">Barangay Clearance</h1>
         <div class="row d-flex justify-content-center">
             <div class="col-lg-5">
                 <div class="card mb-4">
