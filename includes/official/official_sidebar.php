@@ -32,6 +32,14 @@
         header('Location: ../login.php');
         exit();
     }
+
+
+    // Fetch notifications
+    $stmt = $connection->query("SELECT * FROM official_notifications ORDER BY created_at DESC");
+    $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Count unread
+    $unreadCount = $connection->query("SELECT COUNT(*) FROM official_notifications WHERE is_read = 0")->fetchColumn();
 ?>
 <!DOCTYPE html>
 <html lang="en">

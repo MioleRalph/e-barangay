@@ -273,7 +273,11 @@ if (isset($_POST['reject_aid_request'])) {
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h6 class="m-0 font-weight-bold text-primary">Aid Requests List</h6>
         <a href="../xml/export_aid_request.php" class="btn btn-primary btn-sm">
-            <i class="fas fa-file-export"></i> Download
+            <i class="fas fa-file-export"></i> Download Excel
+        </a>
+
+        <a href="../pdf/aid_requests_report.php" class="btn btn-primary btn-sm">
+            <i class="fas fa-file-export"></i> Download PDF
         </a>
     </div>
     <div class="card-body">
@@ -282,8 +286,8 @@ if (isset($_POST['reject_aid_request'])) {
                 <thead class="thead-dark">
                     <tr>
                         <th>#</th>
-                        <th>Beneficiary ID</th>
-                        <th>Beneficiary Name</th>
+                        <th>Resident ID</th>
+                        <th>Resident Name</th>
                         <th>Aid Type</th>
                         <th>Request Reason</th>
                         <th>Status</th>
@@ -296,8 +300,8 @@ if (isset($_POST['reject_aid_request'])) {
                 <tfoot class="thead-dark">
                     <tr>
                         <th>#</th>
-                        <th>Beneficiary ID</th>
-                        <th>Beneficiary Name</th>
+                        <th>Resident ID</th>
+                        <th>Resident Name</th>
                         <th>Aid Type</th>
                         <th>Request Reason</th>
                         <th>Status</th>

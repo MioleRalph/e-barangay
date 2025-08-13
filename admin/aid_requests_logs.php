@@ -111,8 +111,8 @@
                     <tr>
                         <th>#</th>
                         <th>Approved ID</th>
-                        <th>Beneficiary ID</th>
-                        <th>Beneficiary Name</th>
+                        <th>Resident ID</th>
+                        <th>Resident Name</th>
                         <th>Approved By</th>
                         <th>Activity</th>
                         <th>Date</th>
@@ -123,8 +123,8 @@
                     <tr>
                         <th>#</th>
                         <th>Approved ID</th>
-                        <th>Beneficiary ID</th>
-                        <th>Beneficiary Name</th>
+                        <th>Resident ID</th>
+                        <th>Resident Name</th>
                         <th>Approved By</th>
                         <th>Activity</th>
                         <th>Date</th>

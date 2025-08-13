@@ -11,19 +11,24 @@
         $full_name = $_POST['full_name'];
         $email = $_POST['email'];
         $dob = $_POST['dob'];
-        $address = $_POST['address'];
         $amount = 0; 
         $status = 'Pending';
         $request_type = 'Certificate of Indigency';
 
-        // Correct order: name, date_of_birth, email, address, amount, date_submitted
-        $insert = $connection->prepare("INSERT INTO `file_request` (`user_id`, `name`, `date_of_birth`, `email`, `address`, `amount`, `transaction_type`, `transaction_status`, `date_submitted`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-        $insert->execute([$user_id, $full_name, $dob, $email, $address, $amount, $request_type, $status]);
+        // Correct order: name, date_of_birth, email, amount, date_submitted
+        $insert = $connection->prepare("INSERT INTO `file_request` (`user_id`, `name`, `date_of_birth`, `email`, `amount`, `transaction_type`, `transaction_status`, `date_submitted`) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
+        $insert->execute([$user_id, $full_name, $dob, $email, $amount, $request_type, $status]);
 
         // Insert log into resident_request_logs
         $log_stmt = $connection->prepare("INSERT INTO `resident_request_logs` (`account_id`, `name`, `activity`, `activity_type`, `timestamp`) VALUES (?, ?, ?, ?, NOW())");
         $log_stmt->execute([$user_id, $full_name, 'Requested a Certificate of Indigency', 'Certificate of Indigency']);
 
+
+        // Insert notification for officials
+        $notification_message = "New Certificate of Indigency request submitted by " . strtoupper($full_name) . " Email: " . strtoupper($email) . ". Please review and process the request.";
+        $insert_notification = $connection->prepare("INSERT INTO `official_notifications` (`resident_name`, `message`, `is_read`, `created_at`) VALUES (?, ?, '0', NOW())");
+        $insert_notification->execute([$full_name, $notification_message]);
+        
         echo "<script>
                     Swal.fire({
                         icon: 'success',
@@ -88,16 +93,6 @@
                                 </div>
                                 <div class="col-sm-9">
                                     <input type="date" class="form-control" id="dob" name="dob" value="<?php echo isset($account['date_of_birth']) ? ($account['date_of_birth']) : 'No date provided'; ?>" required>
-                                </div>
-                            </div>
-
-                            <!-- address row -->
-                            <div class="row mb-3">
-                                <div class="col-sm-3">
-                                    <label for="address" class="mb-0">Address</label>
-                                </div>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="address" name="address" value="<?php echo isset($account['address']) ? ($account['address']) : 'No address provided'; ?>" required>
                                 </div>
                             </div>
 

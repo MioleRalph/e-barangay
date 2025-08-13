@@ -34,13 +34,13 @@ class MYPDF extends TCPDF {
     }
 }
 
-$stmt = $connection->query("SELECT * FROM aid_events ORDER BY date_started DESC");
-$events = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$stmt = $connection->query("SELECT * FROM aid_requests ORDER BY date_requested DESC");
+$requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $pdf = new MYPDF();
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('e-Barangay System');
-$pdf->SetTitle('Aid Events Report');
+$pdf->SetTitle('Aid Requests Report');
 $pdf->SetMargins(15, 40, 15);
 $pdf->SetAutoPageBreak(true, 25);
 $pdf->AddPage();
@@ -57,29 +57,29 @@ $pdf->Ln(2);
 $pdf->SetFont('dejavusans', 'B', 10);
 $pdf->SetFillColor(220,220,220);
 $pdf->Cell(10, 8, 'No.', 1, 0, 'C', 1);
-$pdf->Cell(50, 8, 'Title', 1, 0, 'C', 1);
+$pdf->Cell(50, 8, 'Name', 1, 0, 'C', 1);
 $pdf->Cell(30, 8, 'Type', 1, 0, 'C', 1);
+$pdf->Cell(30, 8, 'Status', 1, 0, 'C', 1);
 $pdf->Cell(30, 8, 'Amount', 1, 0, 'C', 1);
-$pdf->Cell(30, 8, 'Start Date', 1, 0, 'C', 1);
-$pdf->Cell(30, 8, 'End Date', 1, 1, 'C', 1);
+$pdf->Cell(30, 8, 'Request Date', 1, 1, 'C', 1);
 
 // Table Rows
 $pdf->SetFont('dejavusans', '', 10);
 $total = 0;
-foreach ($events as $i => $event) {
+foreach ($requests as $i => $request) {
     $pdf->Cell(10, 8, $i + 1, 1, 0, 'C');
-    $pdf->Cell(50, 8, $event['title'], 1);
-    $pdf->Cell(30, 8, $event['type'], 1);
-    $pdf->Cell(30, 8, '₱' . number_format($event['total_amount'], 2), 1, 0, 'R');
-    $pdf->Cell(30, 8, date('M j, Y', strtotime($event['date_started'])), 1, 0, 'C');
-    $pdf->Cell(30, 8, date('M j, Y', strtotime($event['date_ended'])), 1, 1, 'C');
-    $total += $event['total_amount'];
+    $pdf->Cell(50, 8, $request['beneficiary_name'], 1);
+    $pdf->Cell(30, 8, $request['aid_type'], 1);
+    $pdf->Cell(30, 8, $request['status'], 1);
+    $pdf->Cell(30, 8, '₱' . number_format($request['amount_requested'], 2), 1, 0, 'R');
+    $pdf->Cell(30, 8, date('M j, Y', strtotime($request['date_requested'])), 1, 1, 'C');
+    $total += $request['amount_requested'];
 }
 
 // Totals
 $pdf->Ln(6);
 $pdf->SetFont('dejavusans', 'B', 10);
-$pdf->Cell(0, 8, "Total Events: " . count($events), 0, 1, 'L');
+$pdf->Cell(0, 8, "Total Requests: " . count($requests), 0, 1, 'L');
 $pdf->Cell(0, 8, "Total Aid Amount: ₱" . number_format($total, 2), 0, 1, 'L');
 
 // Footer note
@@ -94,5 +94,5 @@ $pdf->Cell(0, 8, '______________________________________', 0, 1, 'R');
 $pdf->Cell(0, 6, 'Barangay Captain / Authorized Official', 0, 1, 'R');
 
 // Output the PDF
-$pdf->Output('Aid_Events_Report.pdf', 'I');
+$pdf->Output('Aid_Requests_Report.pdf', 'I');
 ?>

@@ -52,7 +52,6 @@ if (isset($_COOKIE['user_id'])) {
         // Map file names to page titles
         $titles = [
             'admin_dashboard' => 'Admin Dashboard',
-            'beneficiaries' => 'Beneficiaries',
             'aid_requests' => 'Aid Requests',
             'resident_verified_account' => 'Verified Residents',
             'resident_not_verified_account' => 'Not Verified Residents',
@@ -127,13 +126,6 @@ if (isset($_COOKIE['user_id'])) {
             <div class="sidebar-heading">
                 Interface
             </div>
-
-            <li class="nav-item">
-                <a class="nav-link" href="beneficiaries.php">
-                    <i class="fas fa-fw fa-hands-helping"></i>
-                    <span>Beneficiaries</span>
-                </a>
-            </li>
 
             <li class="nav-item">
                 <a class="nav-link" href="aid_requests.php">
