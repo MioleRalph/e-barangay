@@ -30,7 +30,6 @@
                         <th>Name</th>
                         <th>Account ID</th>
                         <th>Email</th>
-                        <th>Address</th>
                         <th>Amount</th>
                         <th>Transaction Type</th>
                         <th>Status</th>
@@ -43,7 +42,6 @@
                         <th>Name</th>
                         <th>Account ID</th>
                         <th>Email</th>
-                        <th>Address</th>
                         <th>Amount</th>
                         <th>Transaction Type</th>
                         <th>Status</th>
@@ -60,7 +58,6 @@
                             <td><?php echo ($status['name']); ?></td>
                             <td><?php echo ($status['date_of_birth']); ?></td>
                             <td><?php echo ($status['email']); ?></td>
-                            <td><?php echo ($status['address']); ?></td>
                             <td><?php echo ($status['amount']); ?></td>
                             <td><?php echo ($status['transaction_type']); ?></td>
                             <td>

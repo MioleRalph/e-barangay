@@ -2,7 +2,7 @@
     include '../includes/official/official_sidebar.php';
 
     // Use a prepared statement to fetch logs
-    $query = $connection->prepare("SELECT * FROM `aid_requests_logs` WHERE `approved_id` = ? ORDER BY `timestamp` DESC");
+    $query = $connection->prepare("SELECT * FROM `official_requests_logs` WHERE `approved_id` = ? ORDER BY `timestamp` DESC");
     $query->execute([$user_id]);
     $history_logs = $query->fetchAll(PDO::FETCH_ASSOC);
 
@@ -53,8 +53,8 @@
                     ?>
                         <tr>
                             <td><?php echo $count++; ?></td>
-                            <td><?php echo ($logs['beneficiary_id']); ?></td>
-                            <td><?php echo ($logs['beneficiary_name']); ?></td>
+                            <td><?php echo ($logs['resident_id']); ?></td>
+                            <td><?php echo ($logs['resident_name']); ?></td>
                             <td><?php echo ($logs['approved_by']); ?></td>
                             <td><?php echo ($logs['activity']); ?></td>
                             <td><?php echo date('F j, Y g:i A', strtotime($logs['timestamp'])); ?></td>

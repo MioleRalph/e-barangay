@@ -79,6 +79,7 @@
         $lastName = $_POST['l_name'];
         $dob = $_POST['dob'];
         $address = $_POST['address'];
+        $contact_number = $_POST['contact_number'];
         $email = $_POST['email'];
         $account_type = 2;
         $pass = password_hash($_POST['password'], PASSWORD_DEFAULT);
@@ -116,9 +117,9 @@
             
             if ($c_pass == 1) {
 
-                    $insert_user = $connection->prepare("INSERT INTO `accounts`(`account_id`,`profile_pic`, `first_name`, `last_name`, `date_of_birth`, `address`, `email`, `password`, `user_type`, `verification_token`, `verification_status`, `date_registered`) 
+                    $insert_user = $connection->prepare("INSERT INTO `accounts`(`account_id`,`profile_pic`, `first_name`, `last_name`, `date_of_birth`, `address`, `contact_number`, `email`, `password`, `user_type`, `verification_token`, `verification_status`, `date_registered`) 
                                     VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-                    $insert_user->execute([$user_id, $fileName, $firstName, $lastName, $dob, $address, $email, $pass, $account_type, $verification_token, $verification_status]);
+                    $insert_user->execute([$user_id, $fileName, $firstName, $lastName, $dob, $address, $contact_number, $email, $pass, $account_type, $verification_token, $verification_status]);
 
                 sendEmail_verification("$firstName", "$email", "$verification_token");
                 $success_msg[] = 'Register successful. Check your email for verification!';
@@ -210,10 +211,16 @@
                                     <input type="date" class="form-control form-control-user" id="dob" name="dob">
                                 </div>
 
-                                <!-- Email input -->
+                                <!-- Address Input -->
                                 <div class="form-group">
                                     <input type="text" class="form-control form-control-user" id="address" name="address"
                                         placeholder="Address">
+                                </div>
+
+                                <!-- Contact Number Input -->
+                                <div class="form-group">
+                                    <input type="text" pattern="\d{11}" maxlength="11" minlength="11" class="form-control form-control-user" id="contact_number" name="contact_number"
+                                        placeholder="Contact Number (11 digits)" title="Contact number must be exactly 11 digits" required>
                                 </div>
 
                                 <!-- Email input -->

@@ -1,7 +1,7 @@
 <?php
 include '../includes/admin/admin_sidebar.php';
 
-$history_logs = $connection->query("SELECT * FROM `aid_requests_logs` ORDER BY `timestamp` DESC")->fetchAll(PDO::FETCH_ASSOC);
+$history_logs = $connection->query("SELECT * FROM `official_requests_logs` ORDER BY `timestamp` DESC")->fetchAll(PDO::FETCH_ASSOC);
 
 echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
 
@@ -54,7 +54,7 @@ echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
                         <tr>
                             <td><?php echo $count++; ?></td>
                             <td><?php echo ($logs['approved_by']); ?></td>
-                            <td><?php echo ($logs['beneficiary_name']); ?></td>
+                            <td><?php echo ($logs['resident_name']); ?></td>
                             <td><?php echo ($logs['activity']); ?></td>
                             <td>
                                 <span class="text-muted">

@@ -59,8 +59,6 @@
             // Map file names to page titles
             $titles = [
                 'official_dashboard' => 'Official Dashboard',
-                'beneficiaries' => 'Beneficiaries',
-                'aid_requests' => 'Aid Requests',
                 'residents' => 'Residents',
                 'add_announcements' => 'Post Announcement',
                 'view_events' => 'Events',
@@ -96,6 +94,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
 </head>
@@ -124,20 +123,6 @@
                 <a class="nav-link" href="official_dashboard.php">
                     <i class="fas fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="beneficiaries.php">   
-                    <i class="fas fa-users"></i>
-                    <span>Beneficiaries</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="aid_requests.php">
-                    <i class="fas fa-hands-helping"></i>
-                    <span>Aid Requests</span>
-                </a>
             </li>
 
             <!-- residents list page -->

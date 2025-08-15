@@ -67,6 +67,9 @@
         $file = $_FILES['image'];
         $firstName = $_POST['f_name'];
         $lastName = $_POST['l_name'];
+        $dob = $_POST['dob'];
+        $address = $_POST['address'];
+        $contact_number = $_POST['contact_number'];
         $email = $_POST['email'];
         $account_type = $_POST['account_type'];
         $pass = password_hash($_POST['password'], PASSWORD_DEFAULT);
@@ -105,9 +108,9 @@
             $warning_msg[] = 'Email already taken!';
         } else {
             // Insert the new account into the database
-            $insert_user = $connection->prepare("INSERT INTO `accounts`(`account_id`, `profile_pic`, `first_name`, `last_name`, `email`, `password`, `user_type`, `verification_token`, `verification_status`, `date_registered`) 
+            $insert_user = $connection->prepare("INSERT INTO `accounts`(`account_id`, `profile_pic`, `first_name`, `last_name`, `date_of_birth`, `address`, `contact_number`, `email`, `password`, `user_type`, `verification_token`, `verification_status`, `date_registered`) 
                             VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-            $insert_user->execute([$user_id, $fileName, $firstName, $lastName, $email, $pass, $account_type, $verification_token, $verification_status]);
+            $insert_user->execute([$user_id, $fileName, $firstName, $lastName, $dob, $address, $contact_number, $email, $pass, $account_type, $verification_token, $verification_status]);
 
             // Send verification email
             sendEmail_verification($firstName, $email, $verification_token);
@@ -157,6 +160,21 @@
                     </div>
                 </div>
 
+                <div class="form-group mb-3">
+                    <label for="dob" class="font-weight-bold">Date of Birth</label>
+                    <input type="date" class="form-control" id="dob" name="dob" required>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="address" class="font-weight-bold">Address</label>
+                    <input type="text" class="form-control" id="address" name="address" placeholder="Enter Address" required>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="contact_number" class="font-weight-bold">Contact Number</label>
+                    <input type="text" class="form-control" id="contact_number" name="contact_number" placeholder="Enter Contact Number" required pattern="\d{11}" maxlength="11" minlength="11" title="Contact number must be exactly 11 digits">
+                </div>
+                
                 <div class="form-group mb-3">
                     <label for="email" class="font-weight-bold">Email Address</label>
                     <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email" required>

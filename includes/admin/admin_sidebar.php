@@ -52,7 +52,6 @@ if (isset($_COOKIE['user_id'])) {
         // Map file names to page titles
         $titles = [
             'admin_dashboard' => 'Admin Dashboard',
-            'aid_requests' => 'Aid Requests',
             'resident_verified_account' => 'Verified Residents',
             'resident_not_verified_account' => 'Not Verified Residents',
             'official_verified_account' => 'Verified Officials',
@@ -63,7 +62,6 @@ if (isset($_COOKIE['user_id'])) {
             'official_new_account' => 'Add Official',
             'residents_logs' => 'Residents Logs',
             'officials_logs' => 'Officials Logs',
-            'aid_requests_logs' => 'Aid Requests Logs',
             'announcements' => 'Announcements',
             'residents_activity_history' => 'Residents Activity History',
             'officials_activity_history' => 'Officials Activity History',
@@ -126,13 +124,6 @@ if (isset($_COOKIE['user_id'])) {
             <div class="sidebar-heading">
                 Interface
             </div>
-
-            <li class="nav-item">
-                <a class="nav-link" href="aid_requests.php">
-                    <i class="fas fa-fw fa-hand-holding-medical"></i>
-                    <span>Aid Requests</span>
-                </a>
-            </li>
 
             <li class="nav-item">
                 <a class="nav-link" href="announcements.php">
@@ -232,13 +223,6 @@ if (isset($_COOKIE['user_id'])) {
                         <a class="collapse-item" href="officials_activity_history.php"><i class="fas fa-list"></i> Activity History</a>
                     </div>
                 </div>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="aid_requests_logs.php">
-                    <i class="fas fa-fw fa-clipboard-list"></i>
-                    <span>Aid Requests Logs</span>
-                </a>
             </li>
 
             <!-- Divider -->

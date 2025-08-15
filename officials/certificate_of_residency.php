@@ -46,21 +46,21 @@
 
                 // Find the correct request from the list using approve_id
                 $account_id = null;
-                $beneficiary_name = null;
+                $resident_name = null;
                 foreach ($certificate_of_residency_requests as $req) {
                     if ($req['id'] == $approve_id) {
                         $account_id = $req['user_id'];
-                        $beneficiary_name = $req['name'];
+                        $resident_name = $req['name'];
                         break;
                     }
                 }
-                if (empty($account_id) || empty($beneficiary_name)) {
-                    echo '<script>Swal.fire({icon: "error", title: "Error", text: "Beneficiary information is missing or invalid."});</script>';
+                if (empty($account_id) || empty($resident_name)) {
+                    echo '<script>Swal.fire({icon: "error", title: "Error", text: "Resident information is missing or invalid."});</script>';
                     exit();
                 }
                 // Log the approval
-                $log_activity = $connection->prepare("INSERT INTO `aid_requests_logs` (`approved_id`, `beneficiary_id`, `beneficiary_name`, `approved_by`, `activity`, `timestamp`) VALUES (?, ?, ?, ?, ?, NOW())");
-                $log_activity->execute([$approved_id, $account_id, $beneficiary_name, $_SESSION['full_name'], 'Request of Certificate of Residency Approved']);
+                $log_activity = $connection->prepare("INSERT INTO `official_requests_logs` (`approved_id`, `resident_id`, `resident_name`, `approved_by`, `activity`, `timestamp`) VALUES (?, ?, ?, ?, ?, NOW())");
+                $log_activity->execute([$approved_id, $account_id, $resident_name, $_SESSION['full_name'], 'Request of Certificate of Residency Approved']);
 
 
                 // Insert notification for the resident
@@ -140,21 +140,21 @@
                 }
 
                 $account_id = null;
-                $beneficiary_name = null;
+                $resident_name = null;
                 foreach ($certificate_of_residency_requests as $req) {
                     if ($req['id'] == $_POST['reject_id']) {
                         $account_id = $req['user_id'];
-                        $beneficiary_name = $req['name'];
+                        $resident_name = $req['name'];
                         break;
                     }
                 }
-                if (empty($account_id) || empty($beneficiary_name)) {
-                    echo '<script>Swal.fire({icon: "error", title: "Error", text: "Beneficiary information is missing or invalid."});</script>';
+                if (empty($account_id) || empty($resident_name)) {
+                    echo '<script>Swal.fire({icon: "error", title: "Error", text: "Resident information is missing or invalid."});</script>';
                     exit();
                 }
                 // Log the rejection
-                $log_activity = $connection->prepare("INSERT INTO `aid_requests_logs` (`approved_id`, `beneficiary_id`, `beneficiary_name`, `approved_by`, `activity`, `timestamp`) VALUES (?, ?, ?, ?, ?, NOW())");
-                $log_activity->execute([$reject_id,  $account_id, $beneficiary_name, $_SESSION['full_name'], 'Financial Assistance Rejected']);
+                $log_activity = $connection->prepare("INSERT INTO `official_requests_logs` (`approved_id`, `resident_id`, `resident_name`, `approved_by`, `activity`, `timestamp`) VALUES (?, ?, ?, ?, ?, NOW())");
+                $log_activity->execute([$reject_id,  $account_id, $resident_name, $_SESSION['full_name'], 'Financial Assistance Rejected']);
 
 
                 // Insert notification for the resident
@@ -222,7 +222,6 @@
                         <th>Account ID</th>
                         <th>Date Of Birth</th>
                         <th>Email</th>
-                        <th>Address</th>
                         <th>Amount</th>
                         <th>Transaction Type</th>
                         <th>Transaction Status</th>
@@ -237,7 +236,6 @@
                         <th>Account ID</th>
                         <th>Date Of Birth</th>
                         <th>Email</th>
-                        <th>Address</th>
                         <th>Amount</th>
                         <th>Transaction Type</th>
                         <th>Transaction Status</th>
@@ -256,7 +254,6 @@
                             <td><?php echo ($logs['user_id']); ?></td>
                             <td><?php echo date('F j, Y g:i A', strtotime($logs['date_of_birth'])); ?></td>
                             <td><?php echo ($logs['email']); ?></td>
-                            <td><?php echo ($logs['address']); ?></td>
                             <td><?php echo ($logs['amount']); ?></td>
                             <td><?php echo ($logs['transaction_type']); ?></td>
                             <td><?php echo ($logs['transaction_status']); ?></td>

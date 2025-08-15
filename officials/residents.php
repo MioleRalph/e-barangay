@@ -98,9 +98,10 @@
                                         </div>
                                         <div class="col-md-8">
                                             <p><strong>Name:</strong> <?php echo ($account['first_name'] . ' ' . $account['last_name']); ?></p>
-                                            <p><strong>Email:</strong> <?php echo htmlspecialchars($account['email']); ?></p>
-                                            <p><strong>Role:</strong> <?php echo ($account['role_name']); ?></p>
-                                            <p><strong>Account ID:</strong> <?php echo ($account['account_id']); ?></p>
+                                            <p><strong>Email:</strong> <?php echo ($account['email']); ?></p>
+                                            <p><strong>Contact Number:</strong> 09603063097</p>
+                                            <p><strong>Date of Birth:</strong> <?php echo date('F j, Y', strtotime($account['date_of_birth'])); ?></p>
+                                            <p><strong>Date Registered:</strong> <?php echo date('F j, Y', strtotime($account['date_registered'])); ?></p>
                                         </div>
                                     </div>
                                 </div>

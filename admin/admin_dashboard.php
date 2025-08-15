@@ -6,8 +6,9 @@
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-            class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+            class="fas fa-download fa-sm text-white-50"></i> Generate Report
+        </a>
 </div>
 
 <!-- Content Row -->
@@ -86,50 +87,50 @@
     </div>
 </div>
 
-<!-- Content Row -->
-<div class="row">
-    <!-- Bar Chart for New Residents -->
-    <div class="col-xl-6 col-lg-6">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">New Residents This Year (Monthly)</h6>
+    <!-- Content Row -->
+    <div class="row">
+        <!-- Bar Chart for New Residents -->
+        <div class="col-xl-6 col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">New Residents This Year (Monthly)</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar" style="height: 250px; overflow: hidden;">
+                        <canvas id="residentsBarChart"></canvas>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <div class="chart-bar" style="height: 250px; overflow: hidden;">
-                    <canvas id="residentsBarChart"></canvas>
+        </div>
+
+        <div class="col-xl-6 col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Blotter Reports This Year (Monthly)</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar" style="height: 250px; overflow: hidden;">
+                        <canvas id="BlotterBarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-xl-6 col-lg-6">
+        <div class="card shadow mb-4 h-100">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Announcement Categories Overview</h6>
+            </div>
+            <div class="card-body mb">
+                <div class="chart-pie pt-4 pb-2">
+                    <canvas id="announcementPieChart" style="max-width: 100%; max-height: 100%;"></canvas>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="col-xl-6 col-lg-6">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Blotter Reports This Year (Monthly)</h6>
-            </div>
-            <div class="card-body">
-                <div class="chart-bar" style="height: 250px; overflow: hidden;">
-                    <canvas id="BlotterBarChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<div class="row mb-5">
-    <div class="col-xl-6 col-lg-6">
-    <div class="card shadow mb-4 h-100">
-        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Announcement Categories Overview</h6>
-        </div>
-        <div class="card-body mb">
-            <div class="chart-pie pt-4 pb-2">
-                <canvas id="announcementPieChart" style="max-width: 100%; max-height: 100%;"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
 
 </div>
 
