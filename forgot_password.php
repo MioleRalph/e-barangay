@@ -16,15 +16,15 @@ function send_password_reset($get_name, $get_email, $token)
         //Server settings
         // $mail->SMTPDebug = SMTP::DEBUG_SERVER; // Enable verbose debug output
         $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com';
+        $mail->Host       = 'smtp.hostinger.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'ralphmiole2001@gmail.com'; // Replace with your Gmail address
-        $mail->Password   = 'avpc xhnd qlxe jbqk';      // Replace with your Gmail app password
+        $mail->Username   = 'maujo_malitbog@e-barangay.online'; // Replace with your Gmail address
+        $mail->Password   = 'barangayQ2001@';      // Replace with your Gmail app password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // Use SMTPS encryption
         $mail->Port       = 465;
 
         //Recipients
-        $mail->setFrom('ralphmiole2001@gmail.com', 'Password Reset');
+        $mail->setFrom('maujo_malitbog@e-barangay.online', 'Password Reset');
         $mail->addAddress($get_email, $get_name); // Add recipient's email and name
 
         //Email content
@@ -34,7 +34,7 @@ function send_password_reset($get_name, $get_email, $token)
                 <p>We received a request to reset your password. Click the link below to reset it:</p>
 
                 // change localhost to your domain name or ip address 120.10.10.13
-                <a href='http://localhost/e-barangay/password_reset.php?token=$token&email=$get_email'>Reset Password</a>
+                <a href='http://e-barangay.online/password_reset.php?token=$token&email=$get_email'>Reset Password</a>
                 <p>If you didn't request this, please ignore this email.</p>
             ";
 
