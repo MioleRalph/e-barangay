@@ -42,7 +42,7 @@
                 <h5>Hi $firstName,</h5>
                 <p>Click the link below to verify your email address</p>
                 <br><br>
-                <a href='http://localhost/e-barangay/verify_email.php?token=$verification_token'>CLICK HERE</a>
+                <a href='http://e-barangay.online/verify_email.php?token=$verification_token'>CLICK HERE</a>
             ";
             
             //Content
