@@ -9,7 +9,7 @@
    // $db_user_name = 'root';
    // $db_user_pass = '';
 
-   $db_name = 'mysql:host=u590380520_e_barangay;dbname=u590380520_barangay';
+   $db_name = 'mysql:host=localhost;dbname=u590380520_e_barangay';
    $db_user_name = 'u590380520_barangay';
    $db_user_pass = 'barangayQ2001';
 
