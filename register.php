@@ -118,7 +118,7 @@
             if ($c_pass == 1) {
 
                     $insert_user = $connection->prepare("INSERT INTO `accounts`(`account_id`,`profile_pic`, `first_name`, `last_name`, `date_of_birth`, `address`, `contact_number`, `email`, `password`, `user_type`, `verification_token`, `verification_status`, `date_registered`) 
-                                    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+                                    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
                     $insert_user->execute([$user_id, $fileName, $firstName, $lastName, $dob, $address, $contact_number, $email, $pass, $account_type, $verification_token, $verification_status]);
 
                 sendEmail_verification("$firstName", "$email", "$verification_token");
