@@ -27,15 +27,15 @@
         try {
             // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                    
             $mail->isSMTP();                                     
-            $mail->Host       = 'smtp.gmail.com';
+            $mail->Host       = 'smtp.hostinger.com';
             $mail->SMTPAuth   = true;           
-            $mail->Username   = 'ralphmiole2001@gmail.com';      
-            $mail->Password   = 'avpc xhnd qlxe jbqk';             
+            $mail->Username   = 'maujo_malitbog@e-barangay.online';      
+            $mail->Password   = 'barangayQ2001@';             
             $mail->SMTPSecure = 'ssl';   
             $mail->Port       = 465;              
 
             //Recipients
-            $mail->setFrom('ralphmiole2001@gmail.com', $firstName);
+            $mail->setFrom('maujo_malitbog@e-barangay.online', $firstName);
             $mail->addAddress($email); 
 
             $email_template = "
