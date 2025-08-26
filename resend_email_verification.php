@@ -23,23 +23,55 @@
             $mail->Port       = 465;              
 
             //Recipients
-            $mail->setFrom('maujo_malitbog@e-barangay.online', $name);
-            $mail->addAddress($email); 
+            $mail->setFrom('maujo_malitbog@e-barangay.online', 'E-Barangay Maujo, Malitbog');
+            $mail->addAddress($email);
+
+            // Extract first name for personalization
+            $firstName = explode(' ', trim($name))[0];
 
             $email_template = "
-                <h2>You have registered</h2>
-                <h5>Verify your email address to login with the link given below</h5>
-                <br><br>
-                <a href='http://e-barangay.online/verify_email.php?token=$verification_token'>CLICK HERE</a>
+                <div style='font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 40px 0;'>
+                    <table align='center' width='100%' cellpadding='0' cellspacing='0' style='max-width: 600px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);'>
+                        <tr>
+                            <td style='background: #4e73df; padding: 24px 0; border-radius: 8px 8px 0 0; text-align: center;'>
+                                <img src='https://e-barangay.online/components/img/stock_image/brgy_logo.jpeg' alt='E-Barangay Logo' width='110' style='margin-bottom: 8px;'>
+                                <h2 style='color: #fff; margin: 0; font-size: 24px;'>E-Barangay Maujo, Malitbog</h2>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style='padding: 32px 30px 24px 30px; color: #333;'>
+                                <h3 style='margin-top: 0;'>Hello, $firstName!</h3>
+                                <p style='font-size: 16px; line-height: 1.6;'>
+                                    You requested to resend your email verification for <strong>E-Barangay Maujo, Malitbog</strong>.<br>
+                                    To activate your account, please verify your email address by clicking the button below:
+                                </p>
+                                <div style='text-align: center; margin: 32px 0;'>
+                                    <a href='http://e-barangay.online/verify_email.php?token=$verification_token'
+                                       style='background: #4e73df; color: #fff; text-decoration: none; padding: 14px 32px; border-radius: 5px; font-size: 16px; display: inline-block;'>
+                                        Verify Email Address
+                                    </a>
+                                </div>
+                                <p style='font-size: 14px; color: #888;'>
+                                    If you did not request this, you can safely ignore this email.<br>
+                                    This link will expire after 24 hours for your security.
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style='background: #f4f6f8; padding: 18px 30px; border-radius: 0 0 8px 8px; text-align: center; color: #aaa; font-size: 13px;'>
+                                &copy; " . date('Y') . " E-Barangay Maujo, Malitbog. All rights reserved.
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             ";
-            
+
             //Content
-            $mail->isHTML(true);                            
-            $mail->Subject = 'Resend email verification';
-
+            $mail->isHTML(true);
+            $mail->Subject = 'Resend Email Verification - E-Barangay Maujo, Malitbog';
             $mail->Body    = $email_template;
-            $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
-
+            $mail->AltBody = "Hello $firstName,\n\nYou requested to resend your email verification for E-Barangay Maujo, Malitbog.\nPlease verify your email address by visiting the following link:\nhttp://e-barangay.online/verify_email.php?token=$verification_token\n\nIf you did not request this, you can ignore this email.";
+            
             $mail->send();
             // echo 'Message has been sent';
         } catch (Exception $e) {

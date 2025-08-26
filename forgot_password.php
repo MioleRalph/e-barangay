@@ -13,35 +13,65 @@ function send_password_reset($get_name, $get_email, $token)
     $mail = new PHPMailer(true);
 
     try {
-        //Server settings
         // $mail->SMTPDebug = SMTP::DEBUG_SERVER; // Enable verbose debug output
         $mail->isSMTP();
         $mail->Host       = 'smtp.hostinger.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'maujo_malitbog@e-barangay.online'; // Replace with your Gmail address
-        $mail->Password   = 'barangayQ2001@';      // Replace with your Gmail app password
+        $mail->Username   = 'maujo_malitbog@e-barangay.online'; 
+        $mail->Password   = 'barangayQ2001@'; 
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // Use SMTPS encryption
         $mail->Port       = 465;
 
         //Recipients
-        $mail->setFrom('maujo_malitbog@e-barangay.online', 'Password Reset');
-        $mail->addAddress($get_email, $get_name); // Add recipient's email and name
+        $mail->setFrom('maujo_malitbog@e-barangay.online', 'E-Barangay Maujo, Malitbog');
+        $mail->addAddress($get_email, $get_name);
+
+        // Prepare first name for greeting
+        $firstName = explode(' ', trim($get_name))[0];
 
         //Email content
-        $email_template = "
-                <h2>Password Reset Request</h2>
-                <p>Hi $get_name,</p>
-                <p>We received a request to reset your password. Click the link below to reset it:</p>
 
-                // change localhost to your domain name or ip address 120.10.10.13
-                <a href='http://e-barangay.online/password_reset.php?token=$token&email=$get_email'>Reset Password</a>
-                <p>If you didn't request this, please ignore this email.</p>
-            ";
+        $email_template = "
+            <div style='font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 40px 0;'>
+            <table align='center' width='100%' cellpadding='0' cellspacing='0' style='max-width: 600px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);'>
+                <tr>
+                <td style='background: #4e73df; padding: 24px 0; border-radius: 8px 8px 0 0; text-align: center;'>
+                    <img src='https://e-barangay.online/components/img/stock_image/brgy_logo.jpeg' alt='E-Barangay Logo' width='110' style='margin-bottom: 8px;'>
+                    <h2 style='color: #fff; margin: 0; font-size: 24px;'>E-Barangay Maujo, Malitbog</h2>
+                </td>
+                </tr>
+                <tr>
+                <td style='padding: 32px 30px 24px 30px; color: #333;'>
+                    <h3 style='margin-top: 0;'>Hello, $firstName!</h3>
+                    <p style='font-size: 16px; line-height: 1.6;'>
+                    We received a request to reset your password for your <strong>E-Barangay Maujo, Malitbog</strong> account.<br>
+                    To reset your password, please click the button below:
+                    </p>
+                    <div style='text-align: center; margin: 32px 0;'>
+                    <a href='http://e-barangay.online/password_reset.php?token=$token&email=$get_email'
+                       style='background: #4e73df; color: #fff; text-decoration: none; padding: 14px 32px; border-radius: 5px; font-size: 16px; display: inline-block;'>
+                        Reset Password
+                    </a>
+                    </div>
+                    <p style='font-size: 14px; color: #888;'>
+                    If you did not request a password reset, please ignore this email.<br>
+                    This link will expire after 24 hours for your security.
+                    </p>
+                </td>
+                </tr>
+                <tr>
+                <td style='background: #f4f6f8; padding: 18px 30px; border-radius: 0 0 8px 8px; text-align: center; color: #aaa; font-size: 13px;'>
+                    &copy; " . date('Y') . " E-Barangay Maujo, Malitbog. All rights reserved.
+                </td>
+                </tr>
+            </table>
+            </div>
+        ";
 
         $mail->isHTML(true);
-        $mail->Subject = 'Password Reset Request';
+        $mail->Subject = 'Password Reset Request - E-Barangay Maujo, Malitbog';
         $mail->Body    = $email_template;
-        $mail->AltBody = 'Please use the HTML version of the email client to view this message.';
+        $mail->AltBody = "Hello $firstName,\n\nWe received a request to reset your password for your E-Barangay Maujo, Malitbog account.\nTo reset your password, please visit the following link:\nhttp://e-barangay.online/password_reset.php?token=$token&email=$get_email\n\nIf you did not request a password reset, please ignore this email.";
 
         $mail->send();
     } catch (Exception $e) {

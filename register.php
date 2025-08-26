@@ -35,15 +35,15 @@
             $mail->Port       = 465;              
 
             //Recipients
-            $mail->setFrom('maujo_malitbog@e-barangay.online', 'E-Barangay Malitbog');
+            $mail->setFrom('maujo_malitbog@e-barangay.online', 'E-Barangay Maujo, Malitbog');
             $mail->addAddress($email, $firstName);
 
             $email_template = "
                 <div style='font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 40px 0;'>
                     <table align='center' width='100%' cellpadding='0' cellspacing='0' style='max-width: 600px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);'>
                         <tr>
-                            <td style='background: #375a7f; padding: 24px 0; border-radius: 8px 8px 0 0; text-align: center;'>
-                                <img src='https://e-barangay.online/components/img/stock_image/brgy_logo.jpeg' alt='E-Barangay Logo' width='60' style='margin-bottom: 8px;'>
+                            <td style='background: #4e73df; padding: 24px 0; border-radius: 8px 8px 0 0; text-align: center;'>
+                                <img src='https://e-barangay.online/components/img/stock_image/brgy_logo.jpeg' alt='E-Barangay Logo' width='110' style='margin-bottom: 8px;'>
                                 <h2 style='color: #fff; margin: 0; font-size: 24px;'>E-Barangay Malitbog</h2>
                             </td>
                         </tr>
@@ -56,7 +56,7 @@
                                 </p>
                                 <div style='text-align: center; margin: 32px 0;'>
                                     <a href='http://e-barangay.online/verify_email.php?token=$verification_token'
-                                       style='background: #375a7f; color: #fff; text-decoration: none; padding: 14px 32px; border-radius: 5px; font-size: 16px; display: inline-block;'>
+                                       style='background: #4e73df; color: #fff; text-decoration: none; padding: 14px 32px; border-radius: 5px; font-size: 16px; display: inline-block;'>
                                         Verify Email Address
                                     </a>
                                 </div>
@@ -68,7 +68,7 @@
                         </tr>
                         <tr>
                             <td style='background: #f4f6f8; padding: 18px 30px; border-radius: 0 0 8px 8px; text-align: center; color: #aaa; font-size: 13px;'>
-                                &copy; " . date('Y') . " E-Barangay Malitbog. All rights reserved.
+                                &copy; " . date('Y') . " E-Barangay Maujo, Malitbog. All rights reserved.
                             </td>
                         </tr>
                     </table>
@@ -77,9 +77,9 @@
 
             //Content
             $mail->isHTML(true);
-            $mail->Subject = 'Verify Your Email Address - E-Barangay Malitbog';
+            $mail->Subject = 'Verify Your Email Address - E-Barangay Maujo, Malitbog';
             $mail->Body    = $email_template;
-            $mail->AltBody = "Hello $firstName,\n\nThank you for registering with E-Barangay Malitbog.\nPlease verify your email address by visiting the following link:\nhttp://e-barangay.online/verify_email.php?token=$verification_token\n\nIf you did not create an account, please ignore this email.";
+            $mail->AltBody = "Hello $firstName,\n\nThank you for registering with E-Barangay Maujo, Malitbog.\nPlease verify your email address by visiting the following link:\nhttp://e-barangay.online/verify_email.php?token=$verification_token\n\nIf you did not create an account, please ignore this email.";
 
             $mail->send();
             // echo 'Message has been sent';
@@ -107,7 +107,7 @@
         $firstName = $_POST['f_name'];
         $lastName = $_POST['l_name'];
         $dob = $_POST['dob'];
-        $address = $_POST['address'];
+        $purok = $_POST['purok'];
         $contact_number = $_POST['contact_number'];
         $email = $_POST['email'];
         $account_type = 2;
@@ -146,9 +146,9 @@
             
             if ($c_pass == 1) {
 
-                    $insert_user = $connection->prepare("INSERT INTO `accounts`(`account_id`,`profile_pic`, `first_name`, `last_name`, `date_of_birth`, `address`, `contact_number`, `email`, `password`, `user_type`, `verification_token`, `verification_status`, `date_registered`) 
+                    $insert_user = $connection->prepare("INSERT INTO `accounts`(`account_id`,`profile_pic`, `first_name`, `last_name`, `date_of_birth`, `purok`, `contact_number`, `email`, `password`, `user_type`, `verification_token`, `verification_status`, `date_registered`) 
                                     VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-                    $insert_user->execute([$user_id, $fileName, $firstName, $lastName, $dob, $address, $contact_number, $email, $pass, $account_type, $verification_token, $verification_status]);
+                    $insert_user->execute([$user_id, $fileName, $firstName, $lastName, $dob, $purok, $contact_number, $email, $pass, $account_type, $verification_token, $verification_status]);
 
                 sendEmail_verification("$firstName", "$email", "$verification_token");
                 $success_msg[] = 'Register successful. Check your email for verification!';
@@ -240,10 +240,10 @@
                                     <input type="date" class="form-control form-control-user" id="dob" name="dob">
                                 </div>
 
-                                <!-- Address Input -->
+                                <!-- Purok Input -->
                                 <div class="form-group">
-                                    <input type="text" class="form-control form-control-user" id="address" name="address"
-                                        placeholder="Address">
+                                    <input type="text" class="form-control form-control-user" id="purok" name="purok"
+                                        placeholder="Purok">
                                 </div>
 
                                 <!-- Contact Number Input -->

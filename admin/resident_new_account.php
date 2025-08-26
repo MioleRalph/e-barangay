@@ -17,30 +17,59 @@
         try {
             // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                    
             $mail->isSMTP();                                     
-            $mail->Host       = 'smtp.gmail.com';
+            $mail->Host       = 'smtp.hostinger.com';
             $mail->SMTPAuth   = true;           
-            $mail->Username   = 'ralphmiole2001@gmail.com';      
-            $mail->Password   = 'avpc xhnd qlxe jbqk';             
+            $mail->Username   = 'maujo_malitbog@e-barangay.online';      
+            $mail->Password   = 'barangayQ2001@';             
             $mail->SMTPSecure = 'ssl';   
             $mail->Port       = 465;              
 
             //Recipients
-            $mail->setFrom('ralphmiole2001@gmail.com', $firstName);
-            $mail->addAddress($email); 
+            $mail->setFrom('maujo_malitbog@e-barangay.online', 'E-Barangay Maujo, Malitbog');
+            $mail->addAddress($email, $firstName);
 
             $email_template = "
-                <h5>Hi $firstName,</h5>
-                <p>Click the link below to verify your email address</p>
-                <br><br>
-                <a href='http://localhost/e-barangay/verify_email.php?token=$verification_token'>CLICK HERE</a>
+                <div style='font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 40px 0;'>
+                    <table align='center' width='100%' cellpadding='0' cellspacing='0' style='max-width: 600px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);'>
+                        <tr>
+                            <td style='background: #4e73df; padding: 24px 0; border-radius: 8px 8px 0 0; text-align: center;'>
+                                <img src='https://e-barangay.online/components/img/stock_image/brgy_logo.jpeg' alt='E-Barangay Logo' width='110' style='margin-bottom: 8px;'>
+                                <h2 style='color: #fff; margin: 0; font-size: 24px;'>E-Barangay Malitbog</h2>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style='padding: 32px 30px 24px 30px; color: #333;'>
+                                <h3 style='margin-top: 0;'>Hello, $firstName!</h3>
+                                <p style='font-size: 16px; line-height: 1.6;'>
+                                    Thank you for registering with <strong>E-Barangay Maujo, Malitbog</strong>.<br>
+                                    To complete your registration, please verify your email address by clicking the button below:
+                                </p>
+                                <div style='text-align: center; margin: 32px 0;'>
+                                    <a href='http://e-barangay.online/verify_email.php?token=$verification_token'
+                                       style='background: #4e73df; color: #fff; text-decoration: none; padding: 14px 32px; border-radius: 5px; font-size: 16px; display: inline-block;'>
+                                        Verify Email Address
+                                    </a>
+                                </div>
+                                <p style='font-size: 14px; color: #888;'>
+                                    If you did not create an account, please ignore this email.<br>
+                                    This link will expire after 24 hours for your security.
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style='background: #f4f6f8; padding: 18px 30px; border-radius: 0 0 8px 8px; text-align: center; color: #aaa; font-size: 13px;'>
+                                &copy; " . date('Y') . " E-Barangay Maujo, Malitbog. All rights reserved.
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             ";
-            
-            //Content
-            $mail->isHTML(true);                            
-            $mail->Subject = 'This is email verification';
 
+            //Content
+            $mail->isHTML(true);
+            $mail->Subject = 'Verify Your Email Address - E-Barangay Maujo, Malitbog';
             $mail->Body    = $email_template;
-            $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+            $mail->AltBody = "Hello $firstName,\n\nThank you for registering with E-Barangay Maujo, Malitbog.\nPlease verify your email address by visiting the following link:\nhttp://e-barangay.online/verify_email.php?token=$verification_token\n\nIf you did not create an account, please ignore this email.";
 
             $mail->send();
             // echo 'Message has been sent';
@@ -68,7 +97,7 @@
         $firstName = $_POST['f_name'];
         $lastName = $_POST['l_name'];
         $dob = $_POST['dob'];
-        $address = $_POST['address'];
+        $purok = $_POST['purok'];
         $contact_number = $_POST['contact_number'];
         $email = $_POST['email'];
         $account_type = $_POST['account_type'];
@@ -108,9 +137,9 @@
             $warning_msg[] = 'Email already taken!';
         } else {
             // Insert the new account into the database
-            $insert_user = $connection->prepare("INSERT INTO `accounts`(`account_id`, `profile_pic`, `first_name`, `last_name`, `date_of_birth`, `address`, `contact_number`, `email`, `password`, `user_type`, `verification_token`, `verification_status`, `date_registered`) 
+            $insert_user = $connection->prepare("INSERT INTO `accounts`(`account_id`, `profile_pic`, `first_name`, `last_name`, `date_of_birth`, `purok`, `contact_number`, `email`, `password`, `user_type`, `verification_token`, `verification_status`, `date_registered`) 
                             VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-            $insert_user->execute([$user_id, $fileName, $firstName, $lastName, $dob, $address, $contact_number, $email, $pass, $account_type, $verification_token, $verification_status]);
+            $insert_user->execute([$user_id, $fileName, $firstName, $lastName, $dob, $purok, $contact_number, $email, $pass, $account_type, $verification_token, $verification_status]);
 
             // Send verification email
             sendEmail_verification($firstName, $email, $verification_token);
@@ -166,8 +195,8 @@
                 </div>
 
                 <div class="form-group mb-3">
-                    <label for="address" class="font-weight-bold">Address</label>
-                    <input type="text" class="form-control" id="address" name="address" placeholder="Enter Address" required>
+                    <label for="purok" class="font-weight-bold">Purok</label>
+                    <input type="text" class="form-control" id="purok" name="purok" placeholder="Enter Purok" required>
                 </div>
 
                 <div class="form-group mb-3">

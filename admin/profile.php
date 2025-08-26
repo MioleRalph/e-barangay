@@ -44,6 +44,9 @@
         $f_name = $_POST['f_name'];
         $l_name = $_POST['l_name'];
         $email = $_POST['email'];
+        $contact_number = $_POST['contact_number'];
+        $purok = $_POST['purok'];
+        $dob = $_POST['birthdate'];
     
         if ($file) {
             $fileName = $profilePic;
@@ -60,10 +63,10 @@
         }
     
         // Prepare the update SQL query
-        $update_sql = "UPDATE `accounts` SET `first_name` = ?, `last_name` = ?, `email` = ?, `profile_pic` = ?, `password` = ? WHERE `account_id` = ?";
+        $update_sql = "UPDATE `accounts` SET `first_name` = ?, `last_name` = ?, `email` = ?, `date_of_birth` = ?, `purok` = ?, `contact_number` = ?, `profile_pic` = ?, `password` = ? WHERE `account_id` = ?";
         $stmt_update = $connection->prepare($update_sql);
-    
-        if ($stmt_update->execute([$f_name, $l_name, $email, $fileName, $hashed_password, $user_id])) {
+
+        if ($stmt_update->execute([$f_name, $l_name, $email, $dob, $purok, $contact_number, $fileName, $hashed_password, $user_id])) {
             echo "<script>
                 Swal.fire({
                     title: 'Success',
@@ -91,7 +94,7 @@
                             class="rounded-circle img-fluid" style="width: 150px;">
                         <h5 class="my-3"><?php echo ($account['first_name'] . ' ' . $account['last_name']); ?></h5>
                         <p class="text-muted mb-1"><?php echo ($account['email']); ?></p>
-                        <p class="text-muted mb-4"><?php echo ($account['address']); ?></p>
+                        <p class="text-muted mb-4"><?php echo ($account['purok']); ?></p>
                         <div class="d-flex justify-content-center mb-2">
                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#profileModal">
                                 Edit Profile
@@ -131,21 +134,39 @@
                                 <p class="mb-0">Mobile</p>
                             </div>
                             <div class="col-sm-9">
-                                <p class="text-muted mb-0">(098) 765-4321</p>
+                                <p class="text-muted mb-0"><?php echo ($account['contact_number']); ?></p>
                             </div>
                         </div>
                         <hr>
 
-                        <!-- address row -->
+                        <!-- date of birth row -->
                         <div class="row">
                             <div class="col-sm-3">
-                                <p class="mb-0">Address</p>
+                                <p class="mb-0">Birthdate</p>
                             </div>
                             <div class="col-sm-9">
-                                <p class="text-muted mb-0"><?php echo ($account['address']); ?></p>
+                                <p class="text-muted mb-0">
+                                    <?php 
+                                        if (!empty($account['date_of_birth'])) {
+                                            echo date('F j, Y', strtotime($account['date_of_birth']));
+                                        } else {
+                                            echo 'N/A';
+                                        }
+                                    ?>
+                                </p>
                             </div>
                         </div>
+                        <hr>
 
+                        <!-- purok row -->
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Purok</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0"><?php echo ($account['purok']); ?></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -188,6 +209,29 @@
                     <div class="form-group">
                         <label for="email">Email</label>
                         <input type="text" class="form-control" id="email" name="email" value="<?php echo ($account['email']); ?>">
+                    </div>
+
+                    <!-- Contact Number Input -->
+                    <div class="form-group">
+                        <label for="contact_number">Mobile</label>
+                        <input type="number" class="form-control" id="contact_number" name="contact_number" 
+                            value="<?php echo ($account['contact_number']); ?>" 
+                            maxlength="11" 
+                            oninput="if(this.value.length > 11) this.value = this.value.slice(0,11);" 
+                            pattern="\d{11}" 
+                            placeholder="Enter 11-digit mobile number">
+                    </div>
+
+                    <!-- Birthdate Input -->
+                    <div class="form-group">
+                        <label for="birthdate">Birthdate</label>
+                        <input type="date" class="form-control" id="birthdate" name="birthdate" value="<?php echo ($account['date_of_birth']); ?>">
+                    </div>
+
+                    <!-- Purok Input -->
+                    <div class="form-group">
+                        <label for="purok">Purok</label>
+                        <input type="text" class="form-control" id="purok" name="purok" value="<?php echo ($account['purok']); ?>">
                     </div>
 
                     <!-- Password Input -->

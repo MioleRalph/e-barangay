@@ -71,7 +71,7 @@
                             <img src="https://bootdey.com/img/Content/avatar/avatar2.png" class="card-img-top rounded-top" alt="Profile Image" style="height: 200px; object-fit: cover;">
                             <div class="card-body text-center">
                                 <h5 class="card-title text-primary"><?php echo ($account['first_name'] . ' ' . $account['last_name']); ?></h5>
-                                <p class="card-text text-muted">@<?php echo ($account['role_name']); ?></p>
+                                <p class="card-text text-muted"><?php echo ($account['purok']); ?></p>
                                 <p class="card-text"><strong>Email:</strong> <?php echo htmlspecialchars($account['email']); ?></p>
                             </div>
                             <div class="card-footer bg-light">
@@ -98,6 +98,7 @@
                                         </div>
                                         <div class="col-md-8">
                                             <p><strong>Name:</strong> <?php echo ($account['first_name'] . ' ' . $account['last_name']); ?></p>
+                                            <p><strong>Purok:</strong> <?php echo ($account['purok']); ?></p>
                                             <p><strong>Email:</strong> <?php echo ($account['email']); ?></p>
                                             <p><strong>Contact Number:</strong> 09603063097</p>
                                             <p><strong>Date of Birth:</strong> <?php echo date('F j, Y', strtotime($account['date_of_birth'])); ?></p>
