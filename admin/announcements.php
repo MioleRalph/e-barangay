@@ -61,10 +61,6 @@
             
             <h2 class="text-center mb-4">Announcements</h2>
             <div class="d-flex justify-content-end mb-4">
-                <a href="../xml/exportAnnouncements.php" class="btn btn-primary">
-                    <i class="fas fa-file-export"></i> Export Announcements XML
-                </a>
-
                 <a href="../pdf/aid_event_report.php" class="btn btn-primary">
                     <i class="fas fa-file-export"></i> PDF Download
                 </a>

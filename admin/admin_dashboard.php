@@ -1,6 +1,19 @@
 <?php 
     include '../includes/admin/admin_sidebar.php'; 
 
+    // query to display total residents (user_type 2 and 3)
+    $total_residents = $connection->query("
+                                 SELECT accounts.*, roles.role_name 
+                                 FROM `accounts` 
+                                 LEFT JOIN `roles` ON accounts.user_type = roles.id 
+                                 WHERE `user_type` IN (2, 3) ")->fetchAll(PDO::FETCH_ASSOC);
+   $total_residents_count = count($total_residents);
+
+    // query to display total announcements (active)
+   $total_announcements = $connection->query("
+                                 SELECT * FROM `announcements` 
+                                 WHERE `status` = 'active' ")->fetchAll(PDO::FETCH_ASSOC);
+   $total_announcements_count = count($total_announcements);
 ?>
 
 <!-- Page Heading -->
@@ -11,7 +24,7 @@
 <!-- Content Row -->
 <div class="row">
 
-    <!-- Total Residents Card Example -->
+    <!-- Total Residents Card -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body">
@@ -19,7 +32,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                             Total Residents</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">1,234</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo number_format($total_residents_count); ?></div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-users fa-2x text-gray-300"></i>
@@ -29,15 +42,15 @@
         </div>
     </div>
 
-    <!-- Total Households Card Example -->
+    <!-- Total Active Announcements Card -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-success shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Total Households</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">456</div>
+                            Total Active Announcements</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo number_format($total_announcements_count); ?></div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-home fa-2x text-gray-300"></i>
@@ -47,41 +60,6 @@
         </div>
     </div>
 
-    <!-- Barangay Officials Card Example -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-info shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                            Barangay Officials</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">12</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-user-tie fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Pending Requests Card Example -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                            Pending Requests</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-comments fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
     <!-- Content Row -->
