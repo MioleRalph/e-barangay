@@ -206,10 +206,13 @@
 
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
-    <div class="card-header py-3">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-users"></i> Activity Logs
+            <i class="fas fa-users"></i> Certificate of Indigency Requests
         </h6>
+        <a href="../pdf/pdf_certificate_of_indigency.php" class="btn btn-primary btn-sm">
+            <i class="fas fa-file-export"></i> PDF Download
+        </a>
     </div>
     <div class="card-body">
         <div class="table-responsive">

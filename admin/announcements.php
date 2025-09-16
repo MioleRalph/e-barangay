@@ -109,16 +109,16 @@
                                     <p><strong>Created at:</strong> <?php echo date('F g:i A', strtotime($announcement["created_at"])); ?></p>
                                     <p><strong>Updated at:</strong> <?php echo date('F g:i A', strtotime($announcement["updated_at"])); ?></p>
                                     <?php if (!empty($announcement['attachment'])): ?>
-    <p>
-        <strong>Attachment:</strong> 
-        <a href="../uploads/<?php echo ($announcement['attachment']); ?>" target="_blank" class="btn btn-sm btn-outline-primary">
-            <i class="fas fa-eye"></i> View
-        </a>
-        <a href="../uploads/<?php echo ($announcement['attachment']); ?>" download class="btn btn-sm btn-outline-success">
-            <i class="fas fa-download"></i> Download
-        </a>
-    </p>
-<?php endif; ?>
+                                        <p>
+                                            <strong>Attachment:</strong> 
+                                            <a href="../uploads/<?php echo ($announcement['attachment']); ?>" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                            <a href="../uploads/<?php echo ($announcement['attachment']); ?>" download class="btn btn-sm btn-outline-success">
+                                                <i class="fas fa-download"></i> Download
+                                            </a>
+                                        </p>
+                                    <?php endif; ?>
 
                                 </div>
                                 <div class="modal-footer">
