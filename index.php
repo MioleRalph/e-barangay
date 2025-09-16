@@ -28,7 +28,7 @@
                 <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
                     <li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>
                     <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <!-- <li class="nav-item"><a class="nav-link" href="#about">About</a></li> -->
                     <li class="nav-item"><a class="nav-link" href="#team">Barangay Officials</a></li>
                 </ul>
             </div>
@@ -37,7 +37,7 @@
     <!-- Masthead-->
     <header class="masthead">
         <div class="container text-center">
-            <img src="components/img/stock_image/brgy_logo.jpeg" alt="Barangay Logo" class="mb-4" style="max-width: 300px;">
+            <img src="components/img/stock_image/brgy_logo_nobg.png" alt="Barangay Logo" class="mb-4" style="max-width: 300px;">
             <div class="masthead-subheading">Welcome to Barangay Assistance System!</div>
             <div class="masthead-heading text-uppercase">Your Partner in Community Services</div>
             <a class="btn btn-primary btn-xl text-uppercase" href="#services">Learn More</a>
@@ -78,8 +78,9 @@
             </div>
         </div>
     </section>
+    
     <!-- About-->
-    <section class="page-section" id="about">
+    <!-- <section class="page-section" id="about">
         <div class="container">
             <div class="text-center">
                 <h2 class="section-heading text-uppercase">About</h2>
@@ -112,7 +113,7 @@
                 </li>
             </ul>
         </div>
-    </section>
+    </section> -->
 
     <!-- Barangay Officials -->
     <section class="page-section bg-dark" id="team">

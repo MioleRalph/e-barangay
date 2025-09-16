@@ -64,11 +64,14 @@
                                 <?php
                                     $activity = htmlspecialchars($status['transaction_status']);
                                     $badgeClass = 'badge-info';
-                                    if (strtolower($status['transaction_status']) === 'Approved') {
+
+                                    $statusValue = strtolower($status['transaction_status']); // normalize
+
+                                    if ($statusValue === 'approved') {
                                         $badgeClass = 'badge-success';
-                                    } elseif (strtolower($status['transaction_status']) === 'Rejected') {
+                                    } elseif ($statusValue === 'rejected') {
                                         $badgeClass = 'badge-danger';
-                                    } elseif (strtolower($status['transaction_status']) === 'Pending') {
+                                    } elseif ($statusValue === 'pending') {
                                         $badgeClass = 'badge-info';
                                     }
                                 ?>

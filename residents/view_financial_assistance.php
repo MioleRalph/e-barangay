@@ -51,7 +51,14 @@
                                     <div class="col-md-4 text-center">
                                         <img src="../components/img/undraw_profile.svg" class="img-fluid rounded mb-3" alt="Announcement Image">
                                         <?php if (!empty($announcement['attachment'])): ?>
-                                            <a href="../uploads/<?php echo ($announcement['attachment']); ?>" target="_blank" class="btn btn-outline-primary btn-sm">View Attachment</a>
+                                            <div class="d-flex flex-column align-items-center">
+                                                <a href="../uploads/<?php echo ($announcement['attachment']); ?>" target="_blank" class="btn btn-outline-primary btn-sm mb-2">
+                                                    <i class="fas fa-eye"></i> View Attachment
+                                                </a>
+                                                <a href="../uploads/<?php echo ($announcement['attachment']); ?>" download class="btn btn-outline-success btn-sm">
+                                                    <i class="fas fa-download"></i> Download Attachment
+                                                </a>
+                                            </div>
                                         <?php else: ?>
                                             <p class="text-muted">No Attachment</p>
                                         <?php endif; ?>
