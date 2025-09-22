@@ -4,9 +4,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="Barangay Assistance System" />
+    <meta name="description" content="E-Barangay System" />
     <meta name="author" content="Barangay Team" />
-    <title>Barangay Assistance System</title>
+    <title>E-Barangay System</title>
     <!-- Font Awesome icons (free version)-->
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     <!-- Google fonts-->
@@ -19,7 +19,7 @@
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
         <div class="container">
-            <a class="navbar-brand" href="#page-top">Barangay Assistance</a>
+            <a class="navbar-brand" href="#page-top">E-Barangay System</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 Menu
                 <i class="fas fa-bars ms-1"></i>
@@ -38,7 +38,7 @@
     <header class="masthead">
         <div class="container text-center">
             <img src="components/img/stock_image/brgy_logo_nobg.png" alt="Barangay Logo" class="mb-4" style="max-width: 300px;">
-            <div class="masthead-subheading">Welcome to Barangay Assistance System!</div>
+            <div class="masthead-subheading">Welcome to E-Barangay System!</div>
             <div class="masthead-heading text-uppercase">Your Partner in Community Services</div>
             <a class="btn btn-primary btn-xl text-uppercase" href="#services">Learn More</a>
         </div>
@@ -223,7 +223,7 @@
     <footer class="footer py-4">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-lg-4 text-lg-start text-white">Copyright &copy; Barangay Assistance 2025</div>
+                <div class="col-lg-4 text-lg-start text-white">E-Barangay System 2025</div>
             </div>
         </div>
     </footer>

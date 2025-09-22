@@ -81,8 +81,8 @@ foreach ($events as $i => $event) {
 // Totals
 $pdf->Ln(6);
 $pdf->SetFont('dejavusans', 'B', 10);
-$pdf->Cell(0, 8, "Total Events: " . count($events), 0, 1, 'L');
-$pdf->Cell(0, 8, "Total Aid Amount: ₱" . number_format($total, 2), 0, 1, 'L');
+$pdf->Cell(0, 8, "Total Barangay Clearance Requests: " . count($events), 0, 1, 'L');
+$pdf->Cell(0, 8, "Total Amount Collected for Barangay Clearance Requests: ₱" . number_format($total, 2), 0, 1, 'L');
 
 // Footer note
 $pdf->Ln(10);

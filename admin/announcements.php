@@ -60,11 +60,7 @@
         <div class="container mt-4">
             
             <h2 class="text-center mb-4">Announcements</h2>
-            <div class="d-flex justify-content-end mb-4">
-                <a href="../pdf/aid_event_report.php" class="btn btn-primary">
-                    <i class="fas fa-file-export"></i> PDF Download
-                </a>
-            </div>
+            
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
                 <?php foreach ($announcement_list as $announcement): ?>
                     <div class="col mb-4">

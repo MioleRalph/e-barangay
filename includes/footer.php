@@ -5,10 +5,10 @@
 <!-- End of Main Content -->
 
 <!-- Footer -->
-<footer class="sticky-footer bg-white">
+<footer class="sticky-footer bg-white py-3">
     <div class="container my-auto">
-        <div class="copyright text-center my-auto">
-            <span>Copyright &copy; E-Barangay 2025</span>
+        <div class="text-center my-auto">
+            <span class="text-muted">E-Barangay System</span>
         </div>
     </div>
 </footer>

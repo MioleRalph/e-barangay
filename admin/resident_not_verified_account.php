@@ -7,11 +7,10 @@
 
 
 <!-- Page Heading -->
-<h1 class="h3 mb-2 text-gray-800">Tables</h1>
-<p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-    For more information about DataTables, please visit the <a target="_blank"
-        href="https://datatables.net">official DataTables documentation</a>.
-    </p>
+<h1 class="h3 mb-2 text-gray-800">Pending Resident Account Verification</h1>
+<p class="mb-4">
+    The table below displays all resident accounts awaiting verification. Please review each entry carefully and proceed with the necessary verification steps.
+</p>
 
 <!-- DataTales Example -->
 <div class="card shadow mb-4">

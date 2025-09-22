@@ -53,10 +53,12 @@ if (isset($_POST['delete_logs'])) {
 ?>
 
 <!-- Page Heading -->
-<h1 class="h3 mb-2 text-gray-800">Tables</h1>
-<p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-    For more information about DataTables, please visit the <a target="_blank"
-        href="https://datatables.net">official DataTables documentation</a>.</p>
+<h1 class="h3 mb-2 text-gray-800">Officials Activity Logs</h1>
+<p class="mb-4">
+    Below is a detailed log of all activities performed by barangay officials. 
+    Use the table to review, search, and manage official account actions. 
+    You can also export the logs for record-keeping.
+</p>
 
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
