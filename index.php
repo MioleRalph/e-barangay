@@ -78,42 +78,50 @@
             </div>
         </div>
     </section>
-    
+
     <!-- About-->
-    <!-- <section class="page-section" id="about">
-        <div class="container">
-            <div class="text-center">
-                <h2 class="section-heading text-uppercase">About</h2>
-                <h3 class="section-subheading text-white">Learn more about our barangay and its mission.</h3>
+    <section id="about" class="page-section p-0">
+        <div id="aboutCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+            <!-- Indicators -->
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
+                <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="1"></button>
             </div>
-            <ul class="timeline">
-                <li>
-                    <div class="timeline-image"><img class="rounded-circle img-fluid" src="components/img/about/1.jpg" alt="..." /></div>
-                    <div class="timeline-panel">
-                        <div class="timeline-heading">
-                            <h4>1990</h4>
-                            <h4 class="subheading">Our Barangay's Foundation</h4>
-                        </div>
-                        <div class="timeline-body">
-                            <p class="text-white">Established to serve and support the community.</p>
-                        </div>
+
+            <!-- Slides -->
+            <div class="carousel-inner" style="max-height: 500px; overflow: hidden;">
+                <div class="carousel-item active">
+                    <img src="components/img/about/1.jpg" class="d-block w-100" alt="Our Barangay’s Foundation"
+                        style="height: 500px; object-fit: cover;">
+                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                        <h5 class="text-uppercase">1990 – Our Barangay’s Foundation</h5>
+                        <p>Established to serve and support the community.</p>
                     </div>
-                </li>
-                <li class="timeline-inverted">
-                    <div class="timeline-image"><img class="rounded-circle img-fluid" src="components/img/about/2.jpg" alt="..." /></div>
-                    <div class="timeline-panel">
-                        <div class="timeline-heading">
-                            <h4>2000</h4>
-                            <h4 class="subheading">Growth and Development</h4>
-                        </div>
-                        <div class="timeline-body">
-                            <p class="text-white">Expanded services to meet the growing needs of residents.</p>
-                        </div>
+                </div>
+
+                <div class="carousel-item">
+                    <img src="components/img/about/2.jpg" class="d-block w-100" alt="Growth and Development"
+                        style="height: 500px; object-fit: cover;">
+                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                        <h5 class="text-uppercase">2000 – Growth and Development</h5>
+                        <p>Expanded services to meet the growing needs of residents.</p>
                     </div>
-                </li>
-            </ul>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#aboutCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#aboutCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
-    </section> -->
+
+        </div>
+    </section>
 
     <!-- Barangay Officials -->
     <section class="page-section bg-dark" id="team">

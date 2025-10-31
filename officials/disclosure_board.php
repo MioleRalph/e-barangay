@@ -1,25 +1,8 @@
-<?php include '../includes/resident/resident_sidebar.php'; ?>
+<?php include '../includes/official/official_sidebar.php'; ?>
 
 <!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Welcome to the Resident Portal</h1>
-</div>
-
-<!-- Content Row -->
 <div class="row">
     <!-- Welcome Card -->
-    <div class="col-xl-12 col-md-12 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-                <h1 class="font-weight-bold text-primary text-lg-center">Hello, Residents!</h1>
-                <p>Welcome to the E-Barangay Portal. Here, you can access important updates, manage your requests, and stay connected with your community.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <!-- title -->
     <div class="col-xl-12 col-md-12 mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body">
@@ -32,8 +15,6 @@
 
 <!-- Features Section -->
 <div class="row">
-
-    <!-- barangay budget -->
     <div class="col-lg-4 mb-4 d-flex">
         <div class="card shadow h-100">
             <div class="card-body d-flex flex-column text-center">
@@ -44,8 +25,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Summary of Income & Expenditures -->
     <div class="col-lg-4 mb-4 d-flex">
         <div class="card shadow h-100">
             <div class="card-body d-flex flex-column text-center">
@@ -56,8 +35,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Itemized Monthly Collections & Disbursements -->
     <div class="col-lg-4 mb-4 d-flex">
         <div class="card shadow h-100">
             <div class="card-body d-flex flex-column text-center">
@@ -68,8 +45,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Barangay Financial Reports -->
     <div class="col-lg-4 mb-4 d-flex">
         <div class="card shadow h-100">
             <div class="card-body d-flex flex-column text-center">
@@ -80,8 +55,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Annual Procurement Plan -->
     <div class="col-lg-4 mb-4 d-flex">
         <div class="card shadow h-100">
             <div class="card-body d-flex flex-column text-center">
@@ -92,8 +65,6 @@
             </div>
         </div>
     </div>
-
-    <!-- List of Notices of Award -->
     <div class="col-lg-4 mb-4 d-flex">
         <div class="card shadow h-100">
             <div class="card-body d-flex flex-column text-center">
@@ -104,8 +75,6 @@
             </div>
         </div>
     </div>
-
-    <!-- 20% Component of IRA Utilization -->
     <div class="col-lg-4 mb-4 d-flex">
         <div class="card shadow h-100">
             <div class="card-body d-flex flex-column text-center">

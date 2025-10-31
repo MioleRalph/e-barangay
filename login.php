@@ -17,10 +17,12 @@
 
             // Fetch from accounts JOIN roles table
             $query = $connection->prepare("
-                SELECT accounts.*, roles.role_name
+                SELECT accounts.*, roles.role_name, accounts.approval_status
                 FROM accounts
                 INNER JOIN roles ON accounts.user_type = roles.id
-                WHERE accounts.email = ? AND accounts.verification_status = 'verified'
+                WHERE accounts.email = ? 
+                  AND accounts.verification_status = 'verified' 
+                  AND accounts.approval_status = 'approved'
                 LIMIT 1
             ");
             $query->execute([$email]);

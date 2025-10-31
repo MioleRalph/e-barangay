@@ -226,7 +226,8 @@
                         <th>Email</th>
                         <th>Amount</th>
                         <th>Transaction Type</th>
-                        <th>Transaction Status</th>
+                        <th>Status</th>
+                        <th>Reference #</th>
                         <th>Timestamp</th>
                         <th>Action</th>
                     </tr>
@@ -240,7 +241,8 @@
                         <th>Email</th>
                         <th>Amount</th>
                         <th>Transaction Type</th>
-                        <th>Transaction Status</th>
+                        <th>Status</th>
+                        <th>Reference #</th>
                         <th>Timestamp</th>
                         <th>Action</th>
                     </tr>
@@ -259,6 +261,7 @@
                             <td><?php echo ($logs['amount']); ?></td>
                             <td><?php echo ($logs['transaction_type']); ?></td>
                             <td><?php echo ($logs['transaction_status']); ?></td>
+                            <td><?php echo ($logs['ref_number']); ?></td>
                             <td><?php echo date('F j, Y g:i A', strtotime($logs['date_submitted'])); ?></td>
                             <td class="text-center">
                                 <div class="btn-group" role="group">

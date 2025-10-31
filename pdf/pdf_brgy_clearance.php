@@ -56,24 +56,24 @@ $pdf->Ln(2);
 // Table Header
 $pdf->SetFont('dejavusans', 'B', 10);
 $pdf->SetFillColor(220,220,220);
-// Adjusted column widths for better fit
+// Adjusted column widths after removing Status column
 $pdf->Cell(12, 8, 'No.', 1, 0, 'C', 1);
-$pdf->Cell(40, 8, 'Name', 1, 0, 'C', 1);
-$pdf->Cell(54, 8, 'Email', 1, 0, 'C', 1);
+$pdf->Cell(35, 8, 'Name', 1, 0, 'C', 1);
+$pdf->Cell(40, 8, 'Email', 1, 0, 'C', 1);
 $pdf->Cell(20, 8, 'Amount', 1, 0, 'C', 1);
-$pdf->Cell(34, 8, 'Date Submitted', 1, 0, 'C', 1);
-$pdf->Cell(30, 8, 'Status', 1, 1, 'C', 1);
+$pdf->Cell(43, 8, 'Reference #', 1, 0, 'C', 1);
+$pdf->Cell(40, 8, 'Date Submitted', 1, 1, 'C', 1);
 
 // Table Rows
 $pdf->SetFont('dejavusans', '', 10);
 $total = 0;
 foreach ($events as $i => $event) {
     $pdf->Cell(12, 8, $i + 1, 1, 0, 'C');
-    $pdf->Cell(40, 8, $event['name'], 1);
-    $pdf->Cell(54, 8, $event['email'], 1);
+    $pdf->Cell(35, 8, $event['name'], 1);
+    $pdf->Cell(40, 8, $event['email'], 1);
     $pdf->Cell(20, 8, '₱' . number_format($event['amount'], 2), 1, 0, 'R');
-    $pdf->Cell(34, 8, date('M j, Y', strtotime($event['date_submitted'])), 1, 0, 'C');
-    $pdf->Cell(30, 8, $event['transaction_status'], 1, 1, 'C');
+    $pdf->Cell(43, 8, $event['ref_number'], 1, 0, 'C');
+    $pdf->Cell(40, 8, date('M j, Y', strtotime($event['date_submitted'])), 1, 1, 'C');
     $total += $event['amount'];
 }
 

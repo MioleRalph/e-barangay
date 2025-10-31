@@ -14,10 +14,11 @@
         $amount = 100; 
         $status = 'Pending';
         $request_type = 'Certificate of Residency';
+        $ref_number = $_POST['ref_number'];
 
         // Correct order: name, date_of_birth, email, amount, date_submitted
-        $insert = $connection->prepare("INSERT INTO `file_request` (`user_id`, `name`, `date_of_birth`, `email`, `amount`, `transaction_type`, `transaction_status`, `date_submitted`) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
-        $insert->execute([$user_id, $full_name, $dob, $email, $amount, $request_type, $status]);
+        $insert = $connection->prepare("INSERT INTO `file_request` (`user_id`, `name`, `date_of_birth`, `email`, `amount`, `transaction_type`, `transaction_status`, `date_submitted`, `ref_number`) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)");
+        $insert->execute([$user_id, $full_name, $dob, $email, $amount, $request_type, $status, $ref_number]);
 
         // Insert log into resident_request_logs
         $log_stmt = $connection->prepare("INSERT INTO `resident_request_logs` (`account_id`, `name`, `activity`, `activity_type`, `timestamp`) VALUES (?, ?, ?, ?, NOW())");
@@ -108,6 +109,19 @@
                                 </div>
                                 <div class="col-sm-9">
                                     <input type="date" class="form-control" id="dob" name="dob" value="<?php echo isset($account['date_of_birth']) ? ($account['date_of_birth']) : 'No date provided'; ?>" required>
+                                </div>
+                            </div>
+
+                            <!-- reference number row -->
+                            <div class="row mb-3">
+                                <div class="col-sm-3">
+                                    <label for="ref_number" class="mb-0">Reference Number</label>
+                                </div>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="ref_number" name="ref_number" required>
+                                    <small id="refHelp" class="form-text text-muted">
+                                        Enter the exact payment reference/transaction number from your receipt or GCash confirmation. This is needed to verify your payment.
+                                    </small>
                                 </div>
                             </div>
 

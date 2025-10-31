@@ -14,10 +14,11 @@
         $amount = 0; 
         $status = 'Pending';
         $request_type = 'Blotter Request';
+        $ref_number = 'No reference #';
 
         // Correct order: name, date_of_birth, email, amount, date_submitted
-        $insert = $connection->prepare("INSERT INTO `file_request` (`user_id`, `name`, `date_of_birth`, `email`, `amount`, `transaction_type`, `transaction_status`, `date_submitted`) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
-        $insert->execute([$user_id, $full_name, $dob, $email, $amount, $request_type, $status]);
+        $insert = $connection->prepare("INSERT INTO `file_request` (`user_id`, `name`, `date_of_birth`, `email`, `amount`, `transaction_type`, `transaction_status`, `date_submitted`, `ref_number`) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)");
+        $insert->execute([$user_id, $full_name, $dob, $email, $amount, $request_type, $status, $ref_number]);
 
         // Insert log into resident_request_logs
         $log_stmt = $connection->prepare("INSERT INTO `resident_request_logs` (`account_id`, `name`, `activity`, `activity_type`, `timestamp`) VALUES (?, ?, ?, ?, NOW())");

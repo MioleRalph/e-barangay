@@ -74,6 +74,8 @@
                 'blotter' => 'Blotter',
                 'view_financial_assistance' => 'Financial Assistance',
                 'history_logs' => 'History Logs',
+                'pending_registration' => 'Pending Registration',
+                'disclosure_board' => 'Disclosure Board',
                 // Add more mappings as needed
             ];
             echo isset($titles[$currentFile]) ? $titles[$currentFile] : 'E-Barangay';
@@ -122,7 +124,32 @@
             <li class="nav-item active">
                 <a class="nav-link" href="official_dashboard.php">
                     <i class="fas fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <!-- disclosure board -->
+            <li class="nav-item">
+                <a class="nav-link" href="disclosure_board.php">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Disclosure Board</span>
+                </a>
+            </li>
+
+            <!-- pending registration -->
+            <li class="nav-item">
+                <a class="nav-link" href="pending_registration.php">
+                    <i class="fas fa-user-clock"></i>
+                    <span>Pending Registration</span>
+                </a>
+            </li>
+
+            <!-- add resident -->
+            <li class="nav-item">
+                <a class="nav-link" href="resident_new_account.php">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Add Resident</span>
+                </a>
             </li>
 
             <!-- residents list page -->

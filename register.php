@@ -43,7 +43,7 @@
                     <table align='center' width='100%' cellpadding='0' cellspacing='0' style='max-width: 600px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);'>
                         <tr>
                             <td style='background: #4e73df; padding: 24px 0; border-radius: 8px 8px 0 0; text-align: center;'>
-                                <img src='https://e-barangay.online/components/img/stock_image/brgy_logo.jpeg' alt='E-Barangay Logo' width='110' style='margin-bottom: 8px;'>
+                                <img src='https://e-barangay.online/components/img/stock_image/brgy_logo_nobg.jpeg' alt='E-Barangay Logo' width='110' style='margin-bottom: 8px;'>
                                 <h2 style='color: #fff; margin: 0; font-size: 24px;'>E-Barangay Malitbog</h2>
                             </td>
                         </tr>
@@ -111,6 +111,7 @@
         $contact_number = $_POST['contact_number'];
         $email = $_POST['email'];
         $account_type = 2;
+        $approval_status = 'pending';
         $pass = password_hash($_POST['password'], PASSWORD_DEFAULT);
         $c_pass = password_verify($_POST['confirm_password'], $pass);
 
@@ -146,9 +147,9 @@
             
             if ($c_pass == 1) {
 
-                    $insert_user = $connection->prepare("INSERT INTO `accounts`(`account_id`,`profile_pic`, `first_name`, `last_name`, `date_of_birth`, `purok`, `contact_number`, `email`, `password`, `user_type`, `verification_token`, `verification_status`, `date_registered`) 
-                                    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-                    $insert_user->execute([$user_id, $fileName, $firstName, $lastName, $dob, $purok, $contact_number, $email, $pass, $account_type, $verification_token, $verification_status]);
+                    $insert_user = $connection->prepare("INSERT INTO `accounts`(`account_id`,`profile_pic`, `first_name`, `last_name`, `date_of_birth`, `purok`, `contact_number`, `email`, `password`, `user_type`, `verification_token`, `verification_status`, `approval_status`, `date_registered`) 
+                                    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+                    $insert_user->execute([$user_id, $fileName, $firstName, $lastName, $dob, $purok, $contact_number, $email, $pass, $account_type, $verification_token, $verification_status, $approval_status]);
 
                 sendEmail_verification("$firstName", "$email", "$verification_token");
                 $success_msg[] = 'Register successful. Check your email for verification!';
