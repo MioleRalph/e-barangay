@@ -137,25 +137,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $residents = $residentsQuery->fetchAll(PDO::FETCH_ASSOC);
 
     // Send emails to all recipients
-    // Queue emails for later sending
-$email_subject = "New Announcement: $title";
-$email_message = "
-    <h3>Hello {name},</h3>
-    <p>There is a new announcement:</p>
-    <h4>$title</h4>
-    <p>$content</p>
-";
-
-$queue_stmt = $connection->prepare("
-    INSERT INTO email_queue (recipient_name, recipient_email, subject, message, attachment)
-    VALUES (?, ?, ?, ?, ?)
-");
-
-foreach ($residents as $res) {
-    $personalized_message = str_replace('{name}', $res['first_name'], $email_message);
-    $queue_stmt->execute([$res['first_name'], $res['email'], $email_subject, $personalized_message, $attachment]);
-}
-
+    foreach ($residents as $res) {
+        sendAnnouncementEmail($res['first_name'], $res['email'], $title, $content, $attachment);
+    }
 
     // Show success message
     echo "<script>
