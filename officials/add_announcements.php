@@ -1,5 +1,6 @@
 <?php
 include '../includes/official/official_sidebar.php';
+
 echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -80,11 +81,19 @@ if (!is_writable($uploadDirectory)) {
 
 // Form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title = $_POST['announcement_title'];
-    $content = $_POST['announcement_content'];
+    // ✅ Keep plain text for emails
+    $plainTitle = $_POST['announcement_title'];
+    $plainContent = $_POST['announcement_content'];
+
+    // ✅ Encrypt only title and content for DB
+    $title = encryptData($plainTitle);
+    $content = encryptData($plainContent);
+
+    // Other fields (not encrypted)
     $category = $_POST['announcement_category'];
     $audience = $_POST['announcement_audience'];
     $status = $_POST['announcement_status'];
+
     $createdAt = date('Y-m-d H:i:s');
     $updatedAt = date('Y-m-d H:i:s');
     $attachment = null;
@@ -120,11 +129,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $attachment = $fileName;
     }
 
-    // Insert announcement into database
+    // ✅ Insert data (only title & content are encrypted)
     $insert_announcement = $connection->prepare("INSERT INTO `announcements` 
         (`title`, `content`, `category`, `posted_by`, `audience`, `status`, `created_at`, `updated_at`, `attachment`) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $insert_announcement->execute([$title, $content, $category, $user_id, $audience, $status, $createdAt, $updatedAt, $attachment]);
+    $insert_announcement->execute([
+        $title, 
+        $content, 
+        $category, 
+        $user_id, 
+        $audience, 
+        $status, 
+        $createdAt, 
+        $updatedAt, 
+        $attachment
+    ]);
 
     // Fetch recipients based on audience
     if ($audience === 'All') {
@@ -136,12 +155,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $residents = $residentsQuery->fetchAll(PDO::FETCH_ASSOC);
 
-    // Send emails to all recipients
+    // ✅ Send emails using plain text
     foreach ($residents as $res) {
-        sendAnnouncementEmail($res['first_name'], $res['email'], $title, $content, $attachment);
+        sendAnnouncementEmail($res['first_name'], $res['email'], $plainTitle, $plainContent, $attachment);
     }
 
-    // Show success message
+    // Success message
     echo "<script>
         Swal.fire({icon:'success',title:'Announcement Added',text:'The announcement has been successfully added.'})
         .then(()=>{window.location.href='add_announcements.php';});
@@ -196,7 +215,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div class="mb-3">
                     <label for="image" class="form-label">Upload Attachment</label>
-                    <input type="file" class="form-control" name="image" id="image" accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                    <input type="file" class="form-control" name="image" id="image" 
+                    accept="image/*,application/pdf,application/msword,
+                    application/vnd.openxmlformats-officedocument.wordprocessingml.document,
+                    application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
                 </div>
                 <div class="d-flex justify-content-center">
                     <button type="submit" class="btn btn-primary">Submit Announcement</button>

@@ -1,112 +1,103 @@
 <?php
-    include '../includes/official/official_sidebar.php';
-    $announcements_list = $connection->query("SELECT * FROM `announcements` WHERE `category` = 'Events' ORDER BY `created_at` DESC")->fetchAll(PDO::FETCH_ASSOC);
+include '../includes/official/official_sidebar.php';
 
-    echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
+// Fetch announcements and decrypt sensitive fields
+$announcements_list = $connection->query("SELECT * FROM `announcements` WHERE `category` = 'Events' ORDER BY `created_at` DESC")->fetchAll(PDO::FETCH_ASSOC);
 
-    $uploadDirectory = __DIR__ . '/../uploads/'; // Absolute path to 'uploads' directory
+foreach ($announcements_list as &$announcement) {
+    $announcement['title'] = decryptData($announcement['title']);
+    $announcement['content'] = decryptData($announcement['content']);
+}
 
-    // Check if the 'uploads' directory is writable
-    if (!is_writable($uploadDirectory)) {
-        echo "<script>Swal.fire('Error', 'Directory is not writable: $uploadDirectory', 'error');</script>";
+echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
+
+$uploadDirectory = __DIR__ . '/../uploads/'; // Absolute path to 'uploads' directory
+
+if (!is_writable($uploadDirectory)) {
+    echo "<script>Swal.fire('Error', 'Directory is not writable: $uploadDirectory', 'error');</script>";
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Handle deletion
+    if (isset($_POST['delete_announcement']) && $_POST['delete_announcement'] == 1) {
+        $announcementId = $_POST['announcement_id'];
+        $existingAnnouncement = $connection->query("SELECT `attachment` FROM `announcements` WHERE `id` = $announcementId")->fetch(PDO::FETCH_ASSOC);
+        if ($existingAnnouncement && !empty($existingAnnouncement['attachment'])) {
+            $attachmentPath = $uploadDirectory . $existingAnnouncement['attachment'];
+            if (file_exists($attachmentPath)) unlink($attachmentPath);
+        }
+
+        $deleteSql = "DELETE FROM `announcements` WHERE `id` = ?";
+        $stmtDelete = $connection->prepare($deleteSql);
+        if ($stmtDelete->execute([$announcementId])) {
+            echo "<script>
+                Swal.fire({icon: 'success', title: 'Deleted', text: 'Announcement deleted successfully!'})
+                .then(() => { window.location.href = 'view_events.php'; });
+            </script>";
+        } else {
+            echo "<script>Swal.fire({icon: 'error', title: 'Error', text: 'Failed to delete the announcement.'});</script>";
+        }
         exit;
     }
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        if (isset($_POST['delete_announcement']) && $_POST['delete_announcement'] == 1) {
-            $announcementId = $_POST['announcement_id'];
+    // Handle update
+    $announcementId = $_POST['id'];
+    $title = $_POST['announcement_title'];
+    $content = $_POST['announcement_content'];
+    $category = $_POST['announcement_category'];
+    $audience = $_POST['announcement_audience'];
+    $status = $_POST['announcement_status'];
 
-            // Fetch the existing attachment to delete it from the server
-            $existingAnnouncement = $connection->query("SELECT `attachment` FROM `announcements` WHERE `id` = $announcementId")->fetch(PDO::FETCH_ASSOC);
-            if ($existingAnnouncement && !empty($existingAnnouncement['attachment'])) {
-                $attachmentPath = $uploadDirectory . $existingAnnouncement['attachment'];
-                if (file_exists($attachmentPath)) {
-                    unlink($attachmentPath); // Delete the file
-                }
-            }
+    // Encrypt title and content before saving
+    $encryptedTitle = encryptData($title);
+    $encryptedContent = encryptData($content);
 
-            // Delete the announcement from the database
-            $deleteSql = "DELETE FROM `announcements` WHERE `id` = ?";
-            $stmtDelete = $connection->prepare($deleteSql);
+    $file = isset($_FILES['image']) ? $_FILES['image'] : null;
+    $attachment = null;
 
-            if ($stmtDelete->execute([$announcementId])) {
-                echo "<script>
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Deleted',
-                        text: 'Announcement deleted successfully!'
-                    }).then(() => {
-                        window.location.href = 'view_events.php';
-                    });
-                </script>";
-            } else {
-                echo "<script>Swal.fire({icon: 'error', title: 'Error', text: 'Failed to delete the announcement. Please try again.'});</script>";
-            }
-            exit;
-        }
+    if ($file && $file['error'] === UPLOAD_ERR_OK) {
+        $allowedTypes = [
+            'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg',
+            'application/pdf', 'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel', 
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        ];
 
-        $announcementId = $_POST['id'];
-        $title = $_POST['announcement_title'];
-        $content = $_POST['announcement_content'];
-        $category = $_POST['announcement_category'];
-        $audience = $_POST['announcement_audience'];
-        $status = $_POST['announcement_status'];
-
-        $file = isset($_FILES['image']) ? $_FILES['image'] : null;
-        $attachment = null;
-
-        // Check if a file was uploaded and validate it
-        if ($file && $file['error'] === UPLOAD_ERR_OK) {
-
-            $allowedTypes = [
-                'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg', 
-                'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-            ];
-
-            $fileType = mime_content_type($file['tmp_name']);
-
-            if (in_array($fileType, $allowedTypes)) {
-                $fileName = uniqid('attachment_', true) . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
-                $filePath = $uploadDirectory . $fileName;
-
-                if (move_uploaded_file($file['tmp_name'], $filePath)) {
-                    $attachment = $fileName; // Set the uploaded file name
-                } else {
-                    echo "<script>Swal.fire({icon: 'error', title: 'Error', text: 'Failed to upload the file. Please try again.'});</script>";
-                    exit;
-                }
-            } else {
-                echo "<script>Swal.fire({icon: 'error', title: 'Error', text: 'Invalid file type. Only JPEG, PNG, WEBP, GIF, and supported document formats are allowed.'});</script>";
+        $fileType = mime_content_type($file['tmp_name']);
+        if (in_array($fileType, $allowedTypes)) {
+            $fileName = uniqid('attachment_', true) . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
+            $filePath = $uploadDirectory . $fileName;
+            if (move_uploaded_file($file['tmp_name'], $filePath)) $attachment = $fileName;
+            else {
+                echo "<script>Swal.fire({icon: 'error', title: 'Error', text: 'Failed to upload the file.'});</script>";
                 exit;
             }
         } else {
-            // Keep the existing attachment if no new file is uploaded
-            $existingAnnouncement = $connection->query("SELECT `attachment` FROM `announcements` WHERE `id` = $announcementId")->fetch(PDO::FETCH_ASSOC);
-            $attachment = $existingAnnouncement['attachment'];
+            echo "<script>Swal.fire({icon: 'error', title: 'Error', text: 'Invalid file type.'});</script>";
+            exit;
         }
-
-        // Prepare the update SQL query
-        $updateSql = "UPDATE `announcements` SET `title` = ?, `content` = ?, `category` = ?, `audience` = ?, `status` = ?, `attachment` = ? WHERE `id` = ?";
-        $params = [$title, $content, $category, $audience, $status, $attachment, $announcementId];
-
-        $stmtUpdate = $connection->prepare($updateSql);
-
-        if ($stmtUpdate->execute($params)) {
-            echo "<script>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Announcement updated successfully!'
-                }).then(() => {
-                    window.location.href = 'view_events.php';
-                });
-            </script>";
-        } else {
-            echo "<script>Swal.fire({icon: 'error', title: 'Error', text: 'Failed to update the announcement. Please try again.'});</script>";
-        }
-        exit;
+    } else {
+        $existingAnnouncement = $connection->query("SELECT `attachment` FROM `announcements` WHERE `id` = $announcementId")->fetch(PDO::FETCH_ASSOC);
+        $attachment = $existingAnnouncement['attachment'];
     }
+
+    // Update the database with encrypted title/content
+    $updateSql = "UPDATE `announcements` SET `title` = ?, `content` = ?, `category` = ?, `audience` = ?, `status` = ?, `attachment` = ? WHERE `id` = ?";
+    $stmtUpdate = $connection->prepare($updateSql);
+    $params = [$encryptedTitle, $encryptedContent, $category, $audience, $status, $attachment, $announcementId];
+
+    if ($stmtUpdate->execute($params)) {
+        echo "<script>
+            Swal.fire({icon: 'success', title: 'Success', text: 'Announcement updated successfully!'})
+            .then(() => { window.location.href = 'view_events.php'; });
+        </script>";
+    } else {
+        echo "<script>Swal.fire({icon: 'error', title: 'Error', text: 'Failed to update the announcement.'});</script>";
+    }
+    exit;
+}
 ?>
 
 <div class="container mt-4">
