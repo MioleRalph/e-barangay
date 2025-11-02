@@ -1,14 +1,5 @@
 <?php
 include '../includes/official/official_sidebar.php';
-
-// Fetch announcements and decrypt sensitive fields
-$announcements_list = $connection->query("SELECT * FROM `announcements` WHERE `category` = 'Events' ORDER BY `created_at` DESC")->fetchAll(PDO::FETCH_ASSOC);
-
-foreach ($announcements_list as &$announcement) {
-    $announcement['title'] = decryptData($announcement['title']);
-    $announcement['content'] = decryptData($announcement['content']);
-}
-
 echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
 
 $uploadDirectory = __DIR__ . '/../uploads/'; // Absolute path to 'uploads' directory
@@ -18,18 +9,33 @@ if (!is_writable($uploadDirectory)) {
     exit;
 }
 
+// Fetch announcements safely
+$stmt = $connection->prepare("SELECT * FROM `announcements` WHERE `category` = 'Events' ORDER BY `created_at` DESC");
+$stmt->execute();
+$announcements_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Decrypt title and content safely
+foreach ($announcements_list as $key => $announcement) {
+    $announcements_list[$key]['title'] = decryptData($announcement['title']);
+    $announcements_list[$key]['content'] = decryptData($announcement['content']);
+}
+
+// Handle POST actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Handle deletion
+
+    // DELETE
     if (isset($_POST['delete_announcement']) && $_POST['delete_announcement'] == 1) {
         $announcementId = $_POST['announcement_id'];
-        $existingAnnouncement = $connection->query("SELECT `attachment` FROM `announcements` WHERE `id` = $announcementId")->fetch(PDO::FETCH_ASSOC);
+        $stmt = $connection->prepare("SELECT `attachment` FROM `announcements` WHERE `id` = ?");
+        $stmt->execute([$announcementId]);
+        $existingAnnouncement = $stmt->fetch(PDO::FETCH_ASSOC);
+
         if ($existingAnnouncement && !empty($existingAnnouncement['attachment'])) {
             $attachmentPath = $uploadDirectory . $existingAnnouncement['attachment'];
             if (file_exists($attachmentPath)) unlink($attachmentPath);
         }
 
-        $deleteSql = "DELETE FROM `announcements` WHERE `id` = ?";
-        $stmtDelete = $connection->prepare($deleteSql);
+        $stmtDelete = $connection->prepare("DELETE FROM `announcements` WHERE `id` = ?");
         if ($stmtDelete->execute([$announcementId])) {
             echo "<script>
                 Swal.fire({icon: 'success', title: 'Deleted', text: 'Announcement deleted successfully!'})
@@ -41,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Handle update
+    // UPDATE
     $announcementId = $_POST['id'];
     $title = $_POST['announcement_title'];
     $content = $_POST['announcement_content'];
@@ -49,11 +55,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $audience = $_POST['announcement_audience'];
     $status = $_POST['announcement_status'];
 
-    // Encrypt title and content before saving
     $encryptedTitle = encryptData($title);
     $encryptedContent = encryptData($content);
 
-    $file = isset($_FILES['image']) ? $_FILES['image'] : null;
+    // Handle attachment
+    $file = $_FILES['image'] ?? null;
     $attachment = null;
 
     if ($file && $file['error'] === UPLOAD_ERR_OK) {
@@ -79,16 +85,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
     } else {
-        $existingAnnouncement = $connection->query("SELECT `attachment` FROM `announcements` WHERE `id` = $announcementId")->fetch(PDO::FETCH_ASSOC);
-        $attachment = $existingAnnouncement['attachment'];
+        $stmt = $connection->prepare("SELECT `attachment` FROM `announcements` WHERE `id` = ?");
+        $stmt->execute([$announcementId]);
+        $existingAnnouncement = $stmt->fetch(PDO::FETCH_ASSOC);
+        $attachment = $existingAnnouncement['attachment'] ?? null;
     }
 
-    // Update the database with encrypted title/content
-    $updateSql = "UPDATE `announcements` SET `title` = ?, `content` = ?, `category` = ?, `audience` = ?, `status` = ?, `attachment` = ? WHERE `id` = ?";
-    $stmtUpdate = $connection->prepare($updateSql);
-    $params = [$encryptedTitle, $encryptedContent, $category, $audience, $status, $attachment, $announcementId];
-
-    if ($stmtUpdate->execute($params)) {
+    $stmtUpdate = $connection->prepare("UPDATE `announcements` SET `title` = ?, `content` = ?, `category` = ?, `audience` = ?, `status` = ?, `attachment` = ? WHERE `id` = ?");
+    if ($stmtUpdate->execute([$encryptedTitle, $encryptedContent, $category, $audience, $status, $attachment, $announcementId])) {
         echo "<script>
             Swal.fire({icon: 'success', title: 'Success', text: 'Announcement updated successfully!'})
             .then(() => { window.location.href = 'view_events.php'; });
@@ -102,9 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div class="container mt-4">
     <?php if (empty($announcements_list)): ?>
-        <div class="alert alert-warning text-center" role="alert">
-            No data found.
-        </div>
+        <div class="alert alert-warning text-center">No data found.</div>
     <?php else: ?>
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
             <?php foreach ($announcements_list as $announcement): ?>
@@ -112,9 +114,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="card h-100 shadow-sm">
                         <img src="../components/img/undraw_profile.svg" class="card-img-top rounded-top" alt="Card Image" style="height: 200px; object-fit: cover;">
                         <div class="card-body">
-                            <h5 class="card-title text-primary text-center text-truncate"><?php echo ($announcement['title']); ?></h5>
+                            <h5 class="card-title text-primary text-center text-truncate"><?php echo htmlspecialchars($announcement['title']); ?></h5>
                             <p class="card-text text-muted" style="max-height: 60px; overflow: hidden; text-overflow: ellipsis;"><?php echo htmlspecialchars($announcement['content']); ?></p>
-                            <p class="card-text"><strong>Category:</strong> <?php echo ($announcement['category']); ?></p>
+                            <p class="card-text"><strong>Category:</strong> <?php echo htmlspecialchars($announcement['category']); ?></p>
                         </div>
                         <div class="card-footer bg-light">
                             <div class="d-flex justify-content-between">
@@ -126,158 +128,101 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
 
-                <!-- Delete Modal -->
-                <div class="modal fade" id="delete_modal_<?php echo $announcement['id']; ?>" tabindex="-1" aria-labelledby="delete_modalLabel_<?php echo $announcement['id']; ?>" aria-hidden="true">
-                    <div class="modal-dialog">
+                <!-- VIEW MODAL -->
+                <div class="modal fade" id="view_modal_<?php echo $announcement['id']; ?>" tabindex="-1">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
                         <div class="modal-content">
-                            <div class="modal-header bg-danger text-white">
-                                <h5 class="modal-title" id="delete_modalLabel_<?php echo $announcement['id']; ?>">Confirm Deletion</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <div class="modal-header">
+                                <h5 class="modal-title"><?php echo htmlspecialchars($announcement['title']); ?></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
-
                             <div class="modal-body">
-                                <p>Are you sure you want to delete the announcement titled <strong><?php echo ($announcement['title']); ?></strong>? This action cannot be undone.</p>
-                            </div>
-
-                            <div class="modal-footer">
-                                <form method="POST" action="">
-                                    <input type="hidden" name="announcement_id" value="<?php echo $announcement['id']; ?>">
-                                    <input type="hidden" name="delete_announcement" value="1">
-                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                </form>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <p><?php echo nl2br(htmlspecialchars($announcement['content'])); ?></p>
+                                <?php if (!empty($announcement['attachment'])): ?>
+                                    <p><strong>Attachment:</strong> <a href="../uploads/<?php echo $announcement['attachment']; ?>" target="_blank"><?php echo htmlspecialchars($announcement['attachment']); ?></a></p>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- View Modal -->
-                <div class="modal fade" id="view_modal_<?php echo $announcement['id']; ?>" tabindex="-1" aria-labelledby="view_modalLabel_<?php echo $announcement['id']; ?>" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
+                <!-- EDIT MODAL -->
+                <div class="modal fade" id="edit_modal_<?php echo $announcement['id']; ?>" tabindex="-1">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
                         <div class="modal-content">
-                            <div class="modal-header bg-primary text-white">
-                                <h5 class="modal-title" id="view_modalLabel_<?php echo $announcement['id']; ?>"><?php echo ($announcement['title']); ?></h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-md-4 text-center">
-                                        <img src="../components/img/undraw_profile.svg" class="img-fluid rounded mb-3" alt="Announcement Image">
+                            <form method="POST" enctype="multipart/form-data">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Edit Announcement</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="hidden" name="id" value="<?php echo $announcement['id']; ?>">
+                                    <div class="mb-3">
+                                        <label>Title</label>
+                                        <input type="text" name="announcement_title" class="form-control" value="<?php echo htmlspecialchars($announcement['title']); ?>" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Content</label>
+                                        <textarea name="announcement_content" class="form-control" rows="5" required><?php echo htmlspecialchars($announcement['content']); ?></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Category</label>
+                                        <input type="text" name="announcement_category" class="form-control" value="<?php echo htmlspecialchars($announcement['category']); ?>" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Audience</label>
+                                        <input type="text" name="announcement_audience" class="form-control" value="<?php echo htmlspecialchars($announcement['audience']); ?>" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Status</label>
+                                        <select name="announcement_status" class="form-select" required>
+                                            <option value="Active" <?php echo $announcement['status']=='Active'?'selected':''; ?>>Active</option>
+                                            <option value="Inactive" <?php echo $announcement['status']=='Inactive'?'selected':''; ?>>Inactive</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Attachment</label>
+                                        <input type="file" name="image" class="form-control">
                                         <?php if (!empty($announcement['attachment'])): ?>
-                                            <div class="d-flex flex-column align-items-center">
-                                                <a href="../uploads/<?php echo ($announcement['attachment']); ?>" target="_blank" class="btn btn-outline-primary btn-sm mb-2">
-                                                    <i class="fas fa-eye"></i> View Attachment
-                                                </a>
-                                                <a href="../uploads/<?php echo ($announcement['attachment']); ?>" download class="btn btn-outline-success btn-sm">
-                                                    <i class="fas fa-download"></i> Download Attachment
-                                                </a>
-                                            </div>
-                                        <?php else: ?>
-                                            <p class="text-muted">No Attachment</p>
+                                            <small>Current: <?php echo htmlspecialchars($announcement['attachment']); ?></small>
                                         <?php endif; ?>
                                     </div>
-                                    <div class="col-md-8">
-                                        <p><strong>Title:</strong> <?php echo ($announcement['title']); ?></p>
-                                        <p><strong>Content:</strong> <?php echo nl2br($announcement['content']); ?></p>
-                                        <p><strong>Category:</strong> <?php echo ($announcement['category']); ?></p>
-                                        <p><strong>Posted By:</strong> <?php echo ($announcement['posted_by']); ?></p>
-                                        <p><strong>Audience:</strong> <?php echo ($announcement['audience']); ?></p>
-                                        <p><strong>Status:</strong>
-                                            <span class="badge bg-<?php echo $announcement['status'] === 'Active' ? 'success' : 'secondary'; ?>">
-                                                <?php echo ($announcement['status']); ?>
-                                            </span>
-                                        </p>
-                                        <p><strong>Created At:</strong> <?php echo date('F j, Y, g:i a', strtotime($announcement['created_at'])); ?></p>
-                                        <p><strong>Updated At:</strong> <?php echo date('F j, Y, g:i a', strtotime($announcement['updated_at'])); ?></p>
-                                    </div>
                                 </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-success">Update</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
 
-                <!-- Edit Modal -->
-                <div class="modal fade" id="edit_modal_<?php echo $announcement['id']; ?>" tabindex="-1" aria-labelledby="edit_modalLabel_<?php echo $announcement['id']; ?>" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
+                <!-- DELETE MODAL -->
+                <div class="modal fade" id="delete_modal_<?php echo $announcement['id']; ?>" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
-                            <div class="modal-header bg-primary text-white">
-                                <h5 class="modal-title" id="edit_modalLabel_<?php echo $announcement['id']; ?>">Edit Announcement: <?php echo ($announcement['title']); ?></h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="" method="POST" enctype="multipart/form-data">
-                                    <input type="hidden" name="id" value="<?php echo $announcement['id']; ?>">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <label for="announcement_title_<?php echo $announcement['id']; ?>" class="form-label">Title</label>
-                                                <input type="text" class="form-control" id="announcement_title_<?php echo $announcement['id']; ?>" name="announcement_title" value="<?php echo ($announcement['title']); ?>" placeholder="Enter title" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <label for="announcement_category_<?php echo $announcement['id']; ?>" class="form-label">Category</label>
-                                                <select class="form-control" name="announcement_category" id="announcement_category_<?php echo $announcement['id']; ?>" required>
-                                                    <option value="" disabled>Select category</option>
-                                                    <option value="Events" <?php echo ($announcement['category'] === 'Events' ? 'selected' : ''); ?>>Events</option>
-                                                    <option value="Emergency" <?php echo ($announcement['category'] === 'Emergency' ? 'selected' : ''); ?>>Emergency</option>
-                                                    <option value="Health" <?php echo ($announcement['category'] === 'Health' ? 'selected' : ''); ?>>Health</option>
-                                                    <option value="Public Notice" <?php echo ($announcement['category'] === 'Public Notice' ? 'selected' : ''); ?>>Public Notice</option>
-                                                    <option value="Lost & Found" <?php echo ($announcement['category'] === 'Lost & Found' ? 'selected' : ''); ?>>Lost & Found</option>
-                                                    <option value="Job Postings" <?php echo ($announcement['category'] === 'Job Postings' ? 'selected' : ''); ?>>Job Postings</option>
-                                                    <option value="Community Projects" <?php echo ($announcement['category'] === 'Community Projects' ? 'selected' : ''); ?>>Community Projects</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="announcement_content_<?php echo $announcement['id']; ?>" class="form-label">Content</label>
-                                        <textarea class="form-control" id="announcement_content_<?php echo $announcement['id']; ?>" name="announcement_content" rows="4" placeholder="Enter content" required><?php echo ($announcement['content']); ?></textarea>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <label for="announcement_audience_<?php echo $announcement['id']; ?>" class="form-label">Audience</label>
-                                                <select class="form-control" name="announcement_audience" id="announcement_audience_<?php echo $announcement['id']; ?>" required>
-                                                    <option value="" disabled>Select audience</option>
-                                                    <option value="All" <?php echo ($announcement['audience'] === 'All' ? 'selected' : ''); ?>>All</option>
-                                                    <option value="Residents" <?php echo ($announcement['audience'] === 'Residents' ? 'selected' : ''); ?>>Residents</option>
-                                                    <option value="Officials" <?php echo ($announcement['audience'] === 'Officials' ? 'selected' : ''); ?>>Officials</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <label for="announcement_status_<?php echo $announcement['id']; ?>" class="form-label">Status</label>
-                                                <select class="form-control" name="announcement_status" id="announcement_status_<?php echo $announcement['id']; ?>" required>
-                                                    <option value="" disabled>Select status</option>
-                                                    <option value="Active" <?php echo ($announcement['status'] === 'Active' ? 'selected' : ''); ?>>Active</option>
-                                                    <option value="Archived" <?php echo ($announcement['status'] === 'Archived' ? 'selected' : ''); ?>>Archived</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="image_<?php echo $announcement['id']; ?>" class="form-label">Upload Attachment</label>
-                                        <input type="file" class="form-control" name="image" id="image_<?php echo $announcement['id']; ?>" accept="image/*">
-                                        <small class="form-text text-muted">Optional: Upload an image or document.</small>
-                                    </div>
-                                    <div class="d-flex justify-content-center">
-                                        <button type="submit" class="btn btn-success">Save Changes</button>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            </div>
+                            <form method="POST">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Confirm Delete</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete "<strong><?php echo htmlspecialchars($announcement['title']); ?></strong>"?
+                                    <input type="hidden" name="announcement_id" value="<?php echo $announcement['id']; ?>">
+                                    <input type="hidden" name="delete_announcement" value="1">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
+
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
 </div>
+
 <?php include '../includes/footer.php'; ?>
