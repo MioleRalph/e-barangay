@@ -91,68 +91,75 @@
     $success_msg = [];
 
     if (isset($_POST['submit'])) {
+    $file = $_FILES['image'];
+    $firstName = $_POST['f_name'];
+    $lastName = $_POST['l_name'];
+    $dob = $_POST['dob'];
+    $purok = $_POST['purok'];
+    $contact_number = $_POST['contact_number'];
+    $email = $_POST['email'];
+    $account_type = 2;
+    $approval_status = 'pending';
+    $pass = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $verification_token = md5(rand());
+    $verification_status = 'not verified';
 
-    
-        $file = $_FILES['image'];
-        $firstName = $_POST['f_name'];
-        $lastName = $_POST['l_name'];
-        $dob = $_POST['dob'];
-        $purok = $_POST['purok'];
-        $contact_number = $_POST['contact_number'];
-        $email = $_POST['email'];
-        $account_type = 2;
-        $approval_status = 'pending';
-        $pass = password_hash($_POST['password'], PASSWORD_DEFAULT);
-        
+    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg']; 
+    $fileType = mime_content_type($file['tmp_name']);
+    if (!in_array($fileType, $allowedTypes)) die('Invalid file type.');
 
-        $verification_token = md5(rand());
-        $verification_status = 'not verified';
-
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif' ,'image/webp' ,'image/jpg']; 
-        $fileType = mime_content_type($file['tmp_name']);
-        echo "File Type: " . $fileType . "<br>";
-
-        if (!in_array($fileType, $allowedTypes)) {
-            die('Invalid file type. Only JPEG, PNG, WEBP, and GIF are allowed.');
-        }
-
-        $fileName = uniqid('profile_', true) . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filePath = $uploadDirectory . $fileName;
-
-        // Move the uploaded file to the target directory
-        if (!move_uploaded_file($file['tmp_name'], $filePath)) {
-            die('Failed to upload the image. Please try again.');
-        }
-
-        $user_id = bin2hex(random_bytes(8)); // Generates a 16-character hexadecimal string
-
-        // Validate the password confirmation
-        if (empty($_POST['password']) || empty($_POST['confirm_password']) || $_POST['password'] !== $_POST['confirm_password']) {
-            die('Password and Confirm Password do not match.');
-        }
-
-        // Check if the email already exists
-        $verify_email = $connection->prepare("SELECT * FROM `accounts` WHERE `email` = ?");
-        $verify_email->execute([$email]);
-
-        if ($verify_email->rowCount() > 0) {
-            $warning_msg[] = 'Email already taken!';
-        } else {
-            // Insert the new account into the database
-            $insert_user = $connection->prepare("INSERT INTO `accounts`(`account_id`, `profile_pic`, `first_name`, `last_name`, `date_of_birth`, `purok`, `contact_number`, `email`, `password`, `user_type`, `approval_status`, `verification_token`, `verification_status`, `date_registered`) 
-                            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-            $insert_user->execute([$user_id, $fileName, $firstName, $lastName, $dob, $purok, $contact_number, $email, $pass, $account_type, $approval_status, $verification_token, $verification_status]);
-
-            // Send verification email
-            sendEmail_verification($firstName, $email, $verification_token);
-            $success_msg[] = 'Register successful. Check your email for verification!';
-
-            // Redirect after successful registration
-            echo '<script>setTimeout(function() { window.location.href = "official_new_account.php"; }, 0);</script>';
-        }
+    $fileName = uniqid('profile_', true) . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
+    if (!move_uploaded_file($file['tmp_name'], $uploadDirectory . $fileName)) {
+        die('Failed to upload image.');
     }
 
+    $user_id = bin2hex(random_bytes(8)); // 16-character hex
 
+    // Password validation
+    if (empty($_POST['password']) || empty($_POST['confirm_password']) || $_POST['password'] !== $_POST['confirm_password']) {
+        die('Password and Confirm Password do not match.');
+    }
+
+    // Check email uniqueness
+    $verify_email = $connection->prepare("SELECT * FROM `accounts` WHERE `email` = ?");
+    $verify_email->execute([$email]);
+
+    if ($verify_email->rowCount() > 0) {
+        $warning_msg[] = 'Email already taken!';
+    } else {
+        // Encrypt sensitive data
+        $encrypted_firstName = encryptData($firstName);
+        $encrypted_lastName = encryptData($lastName);
+        $encrypted_purok = encryptData($purok);
+        $encrypted_contact = encryptData($contact_number);
+
+        // Insert account
+        $insert_user = $connection->prepare("INSERT INTO `accounts`
+            (`account_id`, `profile_pic`, `first_name`, `last_name`, `date_of_birth`, `purok`, `contact_number`, `email`, `password`, `user_type`, `approval_status`, `verification_token`, `verification_status`, `date_registered`) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+
+        $insert_user->execute([
+            $user_id,
+            $fileName,
+            $encrypted_firstName,
+            $encrypted_lastName,
+            $dob,
+            $encrypted_purok,
+            $encrypted_contact,
+            $email,
+            $pass,
+            $account_type,
+            $approval_status,
+            $verification_token,
+            $verification_status
+        ]);
+
+        // Send verification email
+        sendEmail_verification($firstName, $email, $verification_token);
+        $success_msg[] = 'Register successful. Check your email for verification!';
+        echo '<script>setTimeout(function() { window.location.href = "resident_new_account.php"; }, 0);</script>';
+    }
+}
 ?>
 
 <div class="container mt-5" style="max-width: 600px;">

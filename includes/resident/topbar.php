@@ -31,7 +31,7 @@
                                         </div>
                                         <div <?= $note['is_read'] == 0 ? 'class="font-weight-bold"' : '' ?>>
                                             <span class="small text-gray-500"><?= date('M d, Y h:i A', strtotime($note['created_at'])) ?></span>
-                                            <div><?= htmlspecialchars($note['message']) ?></div>
+                                            <div><?= htmlspecialchars(decryptData($note['message'])) ?></div>
                                         </div>
                                     </a>
                                 <?php endforeach; ?>
@@ -46,7 +46,7 @@
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">
-                                    <?= ($fetch_user['first_name'] . ' ' . $fetch_user['last_name']); ?>
+                                    <?= (decryptData($fetch_user['first_name'])) . ' ' . (decryptData($fetch_user['last_name'])); ?>
                                 </span>
                                 <img class="img-profile rounded-circle"
                                     src="../uploads/<?= ($fetch_user['profile_pic']); ?>">

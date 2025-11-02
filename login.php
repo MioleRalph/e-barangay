@@ -5,6 +5,9 @@
 
     // Database connection
     include 'connection.php';
+
+    // Include encryption functions
+    include 'encryption.php'; 
     session_start();
 
     $warning_msg = []; // Initialize the warning message array
@@ -33,17 +36,17 @@
                 if (password_verify($pass, $fetch['password'])) {
                     $id = $fetch['account_id'];
                     $name = $fetch['first_name'] . " " . $fetch['last_name'];
-
                     $activity_type = 'login';
                     $user_type = $fetch['user_type']; // 'administrator', 'official', 'resident'
-
                     $role = $fetch['role_name'];
 
+                    $encrypted_name = encryptData($name);
+                    $encrypted_activity_type = encryptData($activity_type);
 
                     // Log user login activity
                     $log_stmt = $connection->prepare("INSERT INTO `logs` (`user_id`, `name`, `email`, `activity_type`, `user_type`, `timestamp`)
-                                 VALUES (?, ?, ?, ?, ?, NOW())");
-                    $log_stmt->execute([$id, $name, $email, $activity_type, $user_type]);
+                        VALUES (?, ?, ?, ?, ?, NOW())");
+                    $log_stmt->execute([$id, $encrypted_name, $email, $encrypted_activity_type, $user_type]);
 
                     // Set session or cookie
                     setcookie('user_id', $id, 0, '/');

@@ -31,7 +31,6 @@
                         <th>#</th>
                         <th>Account ID</th>
                         <th>Name</th>
-                        <th>Approved By</th>
                         <th>Activity</th>
                         <th>Timestamp</th>
                     </tr>
@@ -41,7 +40,6 @@
                     <th>#</th>
                         <th>Account ID</th>
                         <th>Name</th>
-                        <th>Approved By</th>
                         <th>Activity</th>
                         <th>Timestamp</th>
                     </tr>
@@ -54,9 +52,8 @@
                         <tr>
                             <td><?php echo $count++; ?></td>
                             <td><?php echo ($logs['resident_id']); ?></td>
-                            <td><?php echo ($logs['resident_name']); ?></td>
-                            <td><?php echo ($logs['approved_by']); ?></td>
-                            <td><?php echo ($logs['activity']); ?></td>
+                            <td><?php echo (decryptData($logs['resident_name'])); ?></td>
+                            <td><?php echo (decryptData($logs['activity'])); ?></td>
                             <td><?php echo date('F j, Y g:i A', strtotime($logs['timestamp'])); ?></td>
                         </tr>
                     <?php endforeach; ?>

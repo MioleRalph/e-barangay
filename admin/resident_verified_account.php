@@ -51,7 +51,7 @@
                         <tr>
                             <td><?php echo $count++; ?></td>
                             <td><?php echo htmlspecialchars($verified['account_id']); ?></td>
-                            <td><?php echo htmlspecialchars($verified['first_name'] . ' ' . $verified['last_name']); ?></td>
+                            <td><?php echo htmlspecialchars(decryptData($verified['first_name'])) . ' ' . (decryptData($verified['last_name'])); ?></td>
                             <td><?php echo htmlspecialchars($verified['email']); ?></td>
                             <td>
                                 <span class="badge badge-success text-uppercase">

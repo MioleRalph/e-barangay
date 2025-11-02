@@ -55,10 +55,10 @@
                     ?>
                         <tr>
                             <td><?php echo $count++; ?></td>
-                            <td><?php echo ($status['name']); ?></td>
+                            <td><?php echo (decryptData($status['name'])); ?></td>
                             <td><?php echo ($status['date_of_birth']); ?></td>
                             <td><?php echo ($status['email']); ?></td>
-                            <td><?php echo ($status['amount']); ?></td>
+                            <td><?php echo (decryptData($status['amount'])); ?></td>
                             <td><?php echo ($status['transaction_type']); ?></td>
                             <td>
                                 <?php

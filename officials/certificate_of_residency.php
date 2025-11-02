@@ -107,11 +107,13 @@ if (isset($_POST['approve_request'])) {
             exit();
         }
 
-        // Log the activity
+        $activity_text = 'Certificate of Residency Approved';
+        $encrypted_activity = encryptData($activity_text);
+
         $log = $connection->prepare("INSERT INTO `official_requests_logs`
             (`approved_id`, `resident_id`, `resident_name`, `approved_by`, `activity`, `timestamp`)
             VALUES (?, ?, ?, ?, ?, NOW())");
-        $log->execute([$approved_id, $request['user_id'], $request['name'], $_SESSION['full_name'], 'Certificate of Residency Approved']);
+        $log->execute([$approved_id, $request['user_id'], $request['name'], $_SESSION['full_name'], $encrypted_activity]);
 
         // Insert notification
         $notif = $connection->prepare("INSERT INTO `notifications`
@@ -151,11 +153,13 @@ if (isset($_POST['reject_request'])) {
             exit();
         }
 
-        // Log the activity
+        $activity_text = 'Certificate of Residency Rejected';
+        $encrypted_activity = encryptData($activity_text);
+
         $log = $connection->prepare("INSERT INTO `official_requests_logs`
             (`approved_id`, `resident_id`, `resident_name`, `approved_by`, `activity`, `timestamp`)
             VALUES (?, ?, ?, ?, ?, NOW())");
-        $log->execute([$reject_official_id, $request['user_id'], $request['name'], $_SESSION['full_name'], 'Certificate of Residency Rejected']);
+        $log->execute([$reject_official_id, $request['user_id'], $request['name'], $_SESSION['full_name'], $encrypted_activity]);
 
         // Insert notification
         $notif = $connection->prepare("INSERT INTO `notifications`

@@ -18,8 +18,8 @@
                     <div class="card h-100 shadow-sm">
                         <img src="../components/img/undraw_profile.svg" class="card-img-top rounded-top" alt="Card Image" style="height: 200px; object-fit: cover;">
                         <div class="card-body">
-                            <h5 class="card-title text-primary text-center text-truncate"><?php echo ($announcement['title']); ?></h5>
-                            <p class="card-text text-muted" style="max-height: 60px; overflow: hidden; text-overflow: ellipsis;"><?php echo htmlspecialchars($announcement['content']); ?></p>
+                            <h5 class="card-title text-primary text-center text-truncate"><?php echo (decryptData($announcement['title'])); ?></h5>
+                            <p class="card-text text-muted" style="max-height: 60px; overflow: hidden; text-overflow: ellipsis;"><?php echo (decryptData($announcement['content'])); ?></p>
                             <p class="card-text"><strong>Category:</strong> <?php echo ($announcement['category']); ?></p>
                         </div>
                         <div class="card-footer bg-light">
@@ -35,7 +35,7 @@
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header bg-primary text-white">
-                                <h5 class="modal-title" id="view_modalLabel_<?php echo $announcement['id']; ?>"><?php echo ($announcement['title']); ?></h5>
+                                <h5 class="modal-title" id="view_modalLabel_<?php echo $announcement['id']; ?>"><?php echo (decryptData($announcement['title'])); ?></h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -56,10 +56,9 @@
                                         <?php endif; ?>
                                     </div>
                                     <div class="col-md-8">
-                                        <p><strong>Title:</strong> <?php echo ($announcement['title']); ?></p>
-                                        <p><strong>Content:</strong> <?php echo nl2br($announcement['content']); ?></p>
+                                        <p><strong>Title:</strong> <?php echo (decryptData($announcement['title'])); ?></p>
+                                        <p><strong>Content:</strong> <?php echo nl2br(decryptData($announcement['content'])); ?></p>
                                         <p><strong>Category:</strong> <?php echo ($announcement['category']); ?></p>
-                                        <p><strong>Posted By:</strong> <?php echo ($announcement['posted_by']); ?></p>
                                         <p><strong>Audience:</strong> <?php echo ($announcement['audience']); ?></p>
                                         <p><strong>Status:</strong> 
                                             <span class="badge bg-<?php echo $announcement['status'] === 'Active' ? 'success' : 'secondary'; ?>">
@@ -67,7 +66,6 @@
                                             </span>
                                         </p>
                                         <p><strong>Created At:</strong> <?php echo date('F j, Y, g:i a', strtotime($announcement['created_at'])); ?></p>
-                                        <p><strong>Updated At:</strong> <?php echo date('F j, Y, g:i a', strtotime($announcement['updated_at'])); ?></p>
                                     </div>
                                 </div>
                             </div>

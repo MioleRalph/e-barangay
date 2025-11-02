@@ -49,9 +49,9 @@
                     ?>
                         <tr>
                             <td><?php echo $count++; ?></td>
-                            <td><?php echo ($logs['name']); ?></td>
+                            <td><?php echo (decryptData($logs['name'])); ?></td>
                             <td><?php echo ($logs['account_id']); ?></td>
-                            <td><?php echo ($logs['activity']); ?></td>
+                            <td><?php echo (decryptData($logs['activity'])); ?></td>
                             <td><?php echo date('F j, Y g:i A', strtotime($logs['timestamp'])); ?></td>
                         </tr>
                     <?php endforeach; ?>

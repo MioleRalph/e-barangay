@@ -82,30 +82,29 @@
         $full_name = $_POST['full_name'];
         $email = $_POST['email'];
         $dob = $_POST['dob'];
-        $amount = 0; 
+        $amount = 0; // No fee for Certificate of Indigency
         $status = 'Pending';
         $request_type = 'Certificate of Indigency';
         $ref_number = 'N/A';
 
+        // Encrypt the fields before inserting
+        $encrypted_name = encryptData($full_name);
+        $encrypted_amount = encryptData($amount);
+        $encrypted_ref_number = encryptData($ref_number);
+        $encrypted_activity = encryptData('Requested a Certificate of Indigency');
+        $encrypted_notification_message = encryptData("New Certificate of Indigency request submitted by " . strtoupper($full_name) . " Email: " . strtoupper($email) . ". Please review and process the request.");
+
         // Insert into file_request
-        $insert = $connection->prepare("INSERT INTO `file_request` 
-            (`user_id`, `name`, `date_of_birth`, `email`, `amount`, `transaction_type`, `transaction_status`, `date_submitted`, `ref_number`) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)");
-        $insert->execute([$user_id, $full_name, $dob, $email, $amount, $request_type, $status, $ref_number]);
+        $insert = $connection->prepare("INSERT INTO `file_request` (`user_id`, `name`, `date_of_birth`, `email`, `amount`, `transaction_type`, `transaction_status`, `date_submitted`, `ref_number`) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)");
+        $insert->execute([$user_id, $encrypted_name, $dob, $email, $encrypted_amount, $request_type, $status, $encrypted_ref_number]);
 
         // Insert into logs
-        $log_stmt = $connection->prepare("INSERT INTO `resident_request_logs` 
-            (`account_id`, `name`, `activity`, `activity_type`, `timestamp`) 
-            VALUES (?, ?, ?, ?, NOW())");
-        $log_stmt->execute([$user_id, $full_name, 'Requested a Certificate of Indigency', 'Certificate of Indigency']);
+        $log_stmt = $connection->prepare("INSERT INTO `resident_request_logs` (`account_id`, `name`, `activity`, `activity_type`, `timestamp`) VALUES (?, ?, ?, ?, NOW())");
+        $log_stmt->execute([$user_id, $encrypted_name, $encrypted_activity, 'Certificate of Indigency']);
 
         // Insert notification record for officials
-        $notification_message = "New Certificate of Indigency request submitted by " . strtoupper($full_name) . 
-            " Email: " . strtoupper($email) . ". Please review and process the request.";
-        $insert_notification = $connection->prepare("INSERT INTO `official_notifications` 
-            (`resident_name`, `message`, `is_read`, `created_at`) 
-            VALUES (?, ?, '0', NOW())");
-        $insert_notification->execute([$full_name, $notification_message]);
+        $insert_notification = $connection->prepare("INSERT INTO `official_notifications` (`resident_name`, `message`, `is_read`, `created_at`) VALUES (?, ?, '0', NOW())");
+        $insert_notification->execute([$encrypted_name, $encrypted_notification_message]);
 
         // Send email notifications to all officials and admins
         $get_users = $connection->query("SELECT first_name, email FROM `accounts` WHERE user_type IN ('2', '3')");
@@ -113,7 +112,6 @@
             sendEmail_notification($user['first_name'], $user['email'], $full_name, $email, $ref_number);
         }
 
-        // SweetAlert Success Message
         echo "<script>
             Swal.fire({
                 icon: 'success',
@@ -137,10 +135,10 @@
                     <div class="card-body text-center">
                         <img src="../components/img/undraw_profile_1.svg" alt="avatar"
                             class="rounded-circle img-fluid mb-3" style="width: 120px;">
-                        <h5 class="mb-1"><?php echo ($account['first_name'] . ' ' . $account['last_name']); ?></h5>
+                        <h5 class="mb-1"><?php echo (decryptData($account['first_name'])) . ' ' . (decryptData($account['last_name'])); ?></h5>
                         <p class="text-muted mb-1"><?php echo ($account['email']); ?></p>
                         <p class="text-muted mb-2">
-                            <?php echo isset($account['address']) ? ($account['address']) : 'No address provided'; ?>
+                            <?php echo isset($account['purok']) ? (decryptData($account['purok'])) : 'No address provided'; ?>
                         </p>
                         <hr>
                     </div>
@@ -158,7 +156,7 @@
                                 </div>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control" id="full_name" name="full_name" 
-                                        value="<?php echo ($account['first_name'] . ' ' . $account['last_name']); ?>" required>
+                                        value="<?php echo (decryptData($account['first_name'])) . ' ' . (decryptData($account['last_name'])); ?>" required>
                                 </div>
                             </div>
 

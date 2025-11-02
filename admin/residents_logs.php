@@ -96,16 +96,16 @@ if (isset($_POST['delete_logs'])) {
                     ?>
                         <tr>
                             <td><?php echo $count++; ?></td>
-                            <td><?php echo ($logs['name']); ?></td>
+                            <td><?php echo (decryptData($logs['name'])); ?></td>
                             <td><?php echo ($logs['user_id']); ?></td>
                             <td><?php echo ($logs['email']); ?></td>
                             <td>
                                 <?php
-                                $activity = ($logs['activity_type']);
+                                $activity = (decryptData($logs['activity_type']));
                                 $badgeClass = 'badge-info';
-                                if (strtolower($logs['activity_type']) === 'login') {
+                                if (strtolower($activity) === 'login') {
                                     $badgeClass = 'badge-success';
-                                } elseif (strtolower($logs['activity_type']) === 'logout') {
+                                } elseif (strtolower($activity) === 'logout') {
                                     $badgeClass = 'badge-danger';
                                 }
                                 ?>

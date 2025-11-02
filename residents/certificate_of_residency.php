@@ -1,5 +1,5 @@
-<?php 
-    include '../includes/resident/resident_sidebar.php'; 
+<?php
+    include '../includes/resident/resident_sidebar.php';
     echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
 
     // Import PHPMailer classes
@@ -12,54 +12,55 @@
     require '../PHPMailer/src/SMTP.php';
 
     // Function to send email to officials and admins
-    function sendEmail_notification($recipientName, $recipientEmail, $residentName, $residentEmail, $refNumber) {
+    function sendEmail_notification($recipientName, $recipientEmail, $residentName, $residentEmail, $refNumber)
+    {
         $mail = new PHPMailer(true);
         try {
-            $mail->isSMTP();                                     
+            $mail->isSMTP();
             $mail->Host       = 'smtp.hostinger.com';
-            $mail->SMTPAuth   = true;           
-            $mail->Username   = 'maujo_malitbog@e-barangay.online';      
-            $mail->Password   = 'barangayQ2001@';             
-            $mail->SMTPSecure = 'ssl';   
-            $mail->Port       = 465;              
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'maujo_malitbog@e-barangay.online';
+            $mail->Password   = 'barangayQ2001@';
+            $mail->SMTPSecure = 'ssl';
+            $mail->Port       = 465;
 
             $mail->setFrom('maujo_malitbog@e-barangay.online', 'E-Barangay Maujo, Malitbog');
             $mail->addAddress($recipientEmail, $recipientName);
 
             $email_template = "
-                <div style='font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 40px 0;'>
-                    <table align='center' width='100%' cellpadding='0' cellspacing='0' style='max-width: 600px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);'>
-                        <tr>
-                            <td style='background: #4e73df; padding: 24px 0; border-radius: 8px 8px 0 0; text-align: center;'>
-                                <img src='https://e-barangay.online/components/img/stock_image/brgy_logo_nobg.jpeg' alt='E-Barangay Logo' width='110' style='margin-bottom: 8px;'>
-                                <h2 style='color: #fff; margin: 0; font-size: 24px;'>E-Barangay Maujo, Malitbog</h2>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style='padding: 32px 30px 24px 30px; color: #333;'>
-                                <h3 style='margin-top: 0;'>New Certificate of Residency Request</h3>
-                                <p style='font-size: 16px; line-height: 1.6;'>
-                                    Resident <strong>$residentName</strong> (<a href='mailto:$residentEmail'>$residentEmail</a>) has submitted a new
-                                    <strong>Certificate of Residency</strong> request.<br><br>
-                                    Reference Number: <strong>$refNumber</strong><br>
-                                    Please review and process the request in your E-Barangay dashboard.
-                                </p>
-                                <div style='text-align: center; margin: 32px 0;'>
-                                    <a href='https://e-barangay.online/admin_login.php' 
-                                    style='background: #4e73df; color: #fff; text-decoration: none; padding: 14px 32px; border-radius: 5px; font-size: 16px; display: inline-block;'>
-                                        Go to Dashboard
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style='background: #f4f6f8; padding: 18px 30px; border-radius: 0 0 8px 8px; text-align: center; color: #aaa; font-size: 13px;'>
-                                &copy; " . date('Y') . " E-Barangay Maujo, Malitbog. All rights reserved.
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            ";
+                    <div style='font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 40px 0;'>
+                        <table align='center' width='100%' cellpadding='0' cellspacing='0' style='max-width: 600px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);'>
+                            <tr>
+                                <td style='background: #4e73df; padding: 24px 0; border-radius: 8px 8px 0 0; text-align: center;'>
+                                    <img src='https://e-barangay.online/components/img/stock_image/brgy_logo_nobg.jpeg' alt='E-Barangay Logo' width='110' style='margin-bottom: 8px;'>
+                                    <h2 style='color: #fff; margin: 0; font-size: 24px;'>E-Barangay Maujo, Malitbog</h2>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style='padding: 32px 30px 24px 30px; color: #333;'>
+                                    <h3 style='margin-top: 0;'>New Certificate of Residency Request</h3>
+                                    <p style='font-size: 16px; line-height: 1.6;'>
+                                        Resident <strong>$residentName</strong> (<a href='mailto:$residentEmail'>$residentEmail</a>) has submitted a new
+                                        <strong>Certificate of Residency</strong> request.<br><br>
+                                        Reference Number: <strong>$refNumber</strong><br>
+                                        Please review and process the request in your E-Barangay dashboard.
+                                    </p>
+                                    <div style='text-align: center; margin: 32px 0;'>
+                                        <a href='https://e-barangay.online/admin_login.php' 
+                                        style='background: #4e73df; color: #fff; text-decoration: none; padding: 14px 32px; border-radius: 5px; font-size: 16px; display: inline-block;'>
+                                            Go to Dashboard
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style='background: #f4f6f8; padding: 18px 30px; border-radius: 0 0 8px 8px; text-align: center; color: #aaa; font-size: 13px;'>
+                                    &copy; " . date('Y') . " E-Barangay Maujo, Malitbog. All rights reserved.
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                ";
 
             $mail->isHTML(true);
             $mail->Subject = "New Certificate of Residency Request - $residentName";
@@ -81,25 +82,31 @@
         $full_name = $_POST['full_name'];
         $email = $_POST['email'];
         $dob = $_POST['dob'];
-        $amount = 100; 
+        $amount = 100;
         $status = 'Pending';
         $request_type = 'Certificate of Residency';
         $ref_number = $_POST['ref_number'];
 
-        // Insert into file_request
+        // Encrypt the fields before inserting
+        $encrypted_name = encryptData($full_name);
+        $encrypted_amount = encryptData($amount); // even if numeric, store as string
+        $encrypted_ref_number = encryptData($ref_number);
+        $encrypted_activity = encryptData('Requested a Certificate of Residency');
+        $encrypted_notification_message = encryptData("New Certificate of Residency request submitted by " . strtoupper($full_name) . " Email: " . strtoupper($email) . ". Please review and process the request.");
+
+        // Insert into file_request (encrypt name, amount, ref_number)
         $insert = $connection->prepare("INSERT INTO `file_request` (`user_id`, `name`, `date_of_birth`, `email`, `amount`, `transaction_type`, `transaction_status`, `date_submitted`, `ref_number`) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)");
-        $insert->execute([$user_id, $full_name, $dob, $email, $amount, $request_type, $status, $ref_number]);
+        $insert->execute([$user_id, $encrypted_name, $dob, $email, $encrypted_amount, $request_type, $status, $encrypted_ref_number]);
 
-        // Insert into logs
+        // Insert into logs (encrypt name and activity)
         $log_stmt = $connection->prepare("INSERT INTO `resident_request_logs` (`account_id`, `name`, `activity`, `activity_type`, `timestamp`) VALUES (?, ?, ?, ?, NOW())");
-        $log_stmt->execute([$user_id, $full_name, 'Requested a Certificate of Residency', 'Certificate of Residency']);
+        $log_stmt->execute([$user_id, $encrypted_name, $encrypted_activity, 'Certificate of Residency']);
 
-        // Insert notification record for officials
-        $notification_message = "New Certificate of Residency request submitted by " . strtoupper($full_name) . " Email: " . strtoupper($email) . ". Please review and process the request.";
+        // Insert notification record for officials (encrypt resident_name and message)
         $insert_notification = $connection->prepare("INSERT INTO `official_notifications` (`resident_name`, `message`, `is_read`, `created_at`) VALUES (?, ?, '0', NOW())");
-        $insert_notification->execute([$full_name, $notification_message]);
+        $insert_notification->execute([$encrypted_name, $encrypted_notification_message]);
 
-        // Send email notifications to all officials and admins
+        // Send email notifications to all officials and admins (no encryption here)
         $get_users = $connection->query("SELECT first_name, email FROM `accounts` WHERE user_type IN ('2', '3')");
         while ($user = $get_users->fetch(PDO::FETCH_ASSOC)) {
             sendEmail_notification($user['first_name'], $user['email'], $full_name, $email, $ref_number);
@@ -128,10 +135,10 @@
                     <div class="card-body text-center">
                         <img src="../components/img/undraw_profile_1.svg" alt="avatar"
                             class="rounded-circle img-fluid mb-3" style="width: 120px;">
-                        <h5 class="mb-1"><?php echo ($account['first_name'] . ' ' . $account['last_name']); ?></h5>
+                        <h5 class="mb-1"><?php echo (decryptData($account['first_name'])) . ' ' . (decryptData($account['last_name'])); ?></h5>
                         <p class="text-muted mb-1"><?php echo ($account['email']); ?></p>
                         <p class="text-muted mb-2">
-                            <?php echo isset($account['address']) ? ($account['address']) : 'No address provided'; ?>
+                            <?php echo isset($account['purok']) ? (decryptData($account['purok'])) : 'No address provided'; ?>
                         </p>
                         <hr>
                         <div class="d-flex justify-content-center align-items-center">
@@ -160,8 +167,8 @@
                                     <label for="full_name" class="mb-0">Full Name</label>
                                 </div>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="full_name" name="full_name" 
-                                           value="<?php echo ($account['first_name'] . ' ' . $account['last_name']); ?>" required>
+                                    <input type="text" class="form-control" id="full_name" name="full_name"
+                                        value="<?php echo (decryptData($account['first_name'])) . ' ' . (decryptData($account['last_name'])); ?>" required>
                                 </div>
                             </div>
 
@@ -170,8 +177,8 @@
                                     <label for="email" class="mb-0">Email</label>
                                 </div>
                                 <div class="col-sm-9">
-                                    <input type="email" class="form-control" id="email" name="email" 
-                                           value="<?php echo $account['email']; ?>" required>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                        value="<?php echo $account['email']; ?>" required>
                                 </div>
                             </div>
 
@@ -180,8 +187,8 @@
                                     <label for="dob" class="mb-0">Date Of Birth</label>
                                 </div>
                                 <div class="col-sm-9">
-                                    <input type="date" class="form-control" id="dob" name="dob" 
-                                           value="<?php echo isset($account['date_of_birth']) ? ($account['date_of_birth']) : ''; ?>" required>
+                                    <input type="date" class="form-control" id="dob" name="dob"
+                                        value="<?php echo isset($account['date_of_birth']) ? ($account['date_of_birth']) : ''; ?>" required>
                                 </div>
                             </div>
 
@@ -198,8 +205,8 @@
                             </div>
 
                             <div class="row">
-                                <button type="submit" name="submit" 
-                                        class="btn btn-primary btn-block font-weight-bold py-2 mt-4">
+                                <button type="submit" name="submit"
+                                    class="btn btn-primary btn-block font-weight-bold py-2 mt-4">
                                     Submit
                                 </button>
                             </div>

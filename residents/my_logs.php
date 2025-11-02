@@ -51,12 +51,12 @@
                     ?>
                         <tr>
                             <td><?php echo $count++; ?></td>
-                            <td><?php echo ($logs['name']); ?></td>
+                            <td><?php echo (decryptData($logs['name'])); ?></td>
                             <td><?php echo ($logs['user_id']); ?></td>
                             <td><?php echo ($logs['email']); ?></td>
                             <td>
                                 <?php
-                                    $activity = htmlspecialchars($logs['activity_type']);
+                                    $activity = htmlspecialchars(decryptData($logs['activity_type']));
                                     $badgeClass = 'badge-info';
                                     if (strtolower($logs['activity_type']) === 'login') {
                                         $badgeClass = 'badge-success';

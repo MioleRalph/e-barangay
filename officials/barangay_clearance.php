@@ -101,11 +101,13 @@
                 exit();
             }
 
-            // Log activity
+            $activity_text = 'Barangay Clearance Approved';
+            $encrypted_activity = encryptData($activity_text);
+
             $log = $connection->prepare("INSERT INTO `official_requests_logs`
                 (`approved_id`, `resident_id`, `resident_name`, `approved_by`, `activity`, `timestamp`)
                 VALUES (?, ?, ?, ?, ?, NOW())");
-            $log->execute([$approved_id, $request['user_id'], $request['name'], $_SESSION['full_name'], 'Barangay Clearance Approved']);
+            $log->execute([$approved_id, $request['user_id'], $request['name'], $_SESSION['full_name'], $encrypted_activity]);
 
             // Insert notification
             $notif = $connection->prepare("INSERT INTO `notifications`
@@ -144,11 +146,13 @@
                 exit();
             }
 
-            // Log activity
+            $activity_text = 'Barangay Clearance Rejected';
+            $encrypted_activity = encryptData($activity_text);
+
             $log = $connection->prepare("INSERT INTO `official_requests_logs`
                 (`approved_id`, `resident_id`, `resident_name`, `approved_by`, `activity`, `timestamp`)
                 VALUES (?, ?, ?, ?, ?, NOW())");
-            $log->execute([$reject_official_id, $request['user_id'], $request['name'], $_SESSION['full_name'], 'Barangay Clearance Rejected']);
+            $log->execute([$reject_official_id, $request['user_id'], $request['name'], $_SESSION['full_name'], $encrypted_activity]);
 
             // Insert notification
             $notif = $connection->prepare("INSERT INTO `notifications`

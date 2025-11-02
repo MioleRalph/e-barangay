@@ -107,11 +107,13 @@
                 exit();
             }
 
-            // Log the activity
+            $activity_text = 'Blotter Request Approved';
+            $encrypted_activity = encryptData($activity_text);
+
             $log = $connection->prepare("INSERT INTO `official_requests_logs`
                 (`approved_id`, `resident_id`, `resident_name`, `approved_by`, `activity`, `timestamp`)
                 VALUES (?, ?, ?, ?, ?, NOW())");
-            $log->execute([$approved_id, $request['user_id'], $request['name'], $_SESSION['full_name'], 'Blotter Request Approved']);
+            $log->execute([$approved_id, $request['user_id'], $request['name'], $_SESSION['full_name'], $encrypted_activity]);
 
             // Insert notification
             $notif = $connection->prepare("INSERT INTO `notifications`
@@ -151,11 +153,13 @@
                 exit();
             }
 
-            // Log the activity
+            $activity_text = 'Blotter Request Rejected';
+            $encrypted_activity = encryptData($activity_text);
+
             $log = $connection->prepare("INSERT INTO `official_requests_logs`
                 (`approved_id`, `resident_id`, `resident_name`, `approved_by`, `activity`, `timestamp`)
                 VALUES (?, ?, ?, ?, ?, NOW())");
-            $log->execute([$reject_official_id, $request['user_id'], $request['name'], $_SESSION['full_name'], 'Blotter Request Rejected']);
+            $log->execute([$reject_official_id, $request['user_id'], $request['name'], $_SESSION['full_name'], $encrypted_activity]);
 
             // Insert notification
             $notif = $connection->prepare("INSERT INTO `notifications`

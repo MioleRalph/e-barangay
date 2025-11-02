@@ -71,12 +71,11 @@
                                 <img src="https://bootdey.com/img/Content/avatar/avatar2.png" class="card-img-top rounded-top" alt="No Attachment" style="height: 200px; object-fit: cover;">
                             <?php endif; ?>
                             <div class="card-body">
-                                <h5 class="card-title text-center text-primary"><?php echo ($announcement['title']); ?></h5>
-                                <p class="card-text"><?php echo nl2br(($announcement['content'])); ?></p>
+                                <h5 class="card-title text-center text-primary"><?php echo (decryptData($announcement['title'])); ?></h5>
+                                <p class="card-text"><?php echo nl2br((decryptData($announcement['content']))); ?></p>
                                 <p class="card-text"><strong>Category:</strong> <?php echo ($announcement['category']); ?></p>
                                 <p class="card-text"><strong>Audience:</strong> <?php echo ($announcement['audience']); ?></p>
                                 <p class="card-text"><strong>Status:</strong> <?php echo ($announcement['status']); ?></p>
-                                <p class="card-text"><small class="text-muted">Posted by: <?php echo ($announcement['posted_by']); ?> | <?php echo date('F g:i A', strtotime($announcement["created_at"])); ?></small></p>
                             </div>
                             <div class="card-footer bg-light">
                                 <div class="d-flex justify-content-between">
@@ -96,14 +95,12 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <h4><?php echo ($announcement['title']); ?></h4>
-                                    <p><?php echo nl2br(($announcement['content'])); ?></p>
+                                    <h4><?php echo (decryptData($announcement['title'])); ?></h4>
+                                    <p><?php echo nl2br((decryptData($announcement['content']))); ?></p>
                                     <p><strong>Category:</strong> <?php echo ($announcement['category']); ?></p>
                                     <p><strong>Audience:</strong> <?php echo ($announcement['audience']); ?></p>
                                     <p><strong>Status:</strong> <?php echo ($announcement['status']); ?></p>
-                                    <p><strong>Posted by:</strong> <?php echo ($announcement['posted_by']); ?></p>
                                     <p><strong>Created at:</strong> <?php echo date('F g:i A', strtotime($announcement["created_at"])); ?></p>
-                                    <p><strong>Updated at:</strong> <?php echo date('F g:i A', strtotime($announcement["updated_at"])); ?></p>
                                     <?php if (!empty($announcement['attachment'])): ?>
                                         <p>
                                             <strong>Attachment:</strong> 
@@ -134,7 +131,7 @@
                                 </div>
                                 
                                 <div class="modal-body">
-                                    <p>Are you sure you want to delete the announcement <strong><?php echo ($announcement['title']); ?></strong>? This action cannot be undone.</p>
+                                    <p>Are you sure you want to delete the announcement <strong><?php echo (decryptData($announcement['title'])); ?></strong>? This action cannot be undone.</p>
                                 </div>
 
                                 <div class="modal-footer">

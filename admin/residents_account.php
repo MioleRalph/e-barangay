@@ -76,7 +76,7 @@
                         <div class="card h-100 shadow-sm">
                             <img src="https://bootdey.com/img/Content/avatar/avatar2.png" class="card-img-top rounded-top" alt="Profile Image" style="height: 200px; object-fit: cover;">
                             <div class="card-body text-center">
-                                <h5 class="card-title text-primary"><?php echo ($account['first_name'] . ' ' . $account['last_name']); ?></h5>
+                                <h5 class="card-title text-primary"><?php echo (decryptData($account['first_name'])) . ' ' . (decryptData($account['last_name'])); ?></h5>
                                 <p class="card-text text-muted">@<?php echo ($account['role_name']); ?></p>
                                 <p class="card-text"><strong>Email:</strong> <?php echo htmlspecialchars($account['email']); ?></p>
                             </div>
@@ -103,7 +103,7 @@
                                             <img src="https://bootdey.com/img/Content/avatar/avatar2.png" class="img-fluid rounded mb-3" alt="Profile Image">
                                         </div>
                                         <div class="col-md-8">
-                                            <p><strong>Name:</strong> <?php echo ($account['first_name'] . ' ' . $account['last_name']); ?></p>
+                                            <p><strong>Name:</strong> <?php echo (decryptData($account['first_name'])) . ' ' . (decryptData($account['last_name'])); ?></p>
                                             <p><strong>Email:</strong> <?php echo htmlspecialchars($account['email']); ?></p>
                                             <p><strong>Role:</strong> <?php echo ($account['role_name']); ?></p>
                                             <p><strong>Account ID:</strong> <?php echo ($account['account_id']); ?></p>
@@ -127,7 +127,7 @@
                                 </div>
                                 
                                 <div class="modal-body">
-                                    <p>Are you sure you want to delete the account of <strong><?php echo ($account['first_name'] . ' ' . $account['last_name']); ?></strong>? This action cannot be undone.</p>
+                                    <p>Are you sure you want to delete the account of <strong><?php echo (decryptData($account['first_name'])) . ' ' . (decryptData($account['last_name'])); ?></strong>? This action cannot be undone.</p>
                                 </div>
 
                                 <div class="modal-footer">

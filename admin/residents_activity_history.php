@@ -56,8 +56,8 @@ echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
                         <tr>
                             <td><?php echo $count++; ?></td>
                             <td><?php echo ($logs['account_id']); ?></td>
-                            <td><?php echo ($logs['name']); ?></td>
-                            <td><?php echo ($logs['activity']); ?></td>
+                            <td><?php echo (decryptData($logs['name'])); ?></td>
+                            <td><?php echo (decryptData($logs['activity'])); ?></td>
                             <td><?php echo ($logs['activity_type']); ?></td>
                             <td>
                                 <span class="text-muted">

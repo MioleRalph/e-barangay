@@ -85,49 +85,43 @@
         $full_name = $_POST['full_name'];
         $email = $_POST['email'];
         $dob = $_POST['dob'];
-        $amount = 100; 
+        $amount = 100;
         $status = 'Pending';
         $request_type = 'Barangay Clearance';
         $ref_number = $_POST['ref_number'];
 
-        // Insert request into database
-        $insert = $connection->prepare("INSERT INTO `file_request` 
-            (`user_id`, `name`, `date_of_birth`, `email`, `amount`, `transaction_type`, `transaction_status`, `date_submitted`, `ref_number`) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)");
-        $insert->execute([$user_id, $full_name, $dob, $email, $amount, $request_type, $status, $ref_number]);
+        // Encrypt the fields before inserting
+        $encrypted_name = encryptData($full_name);
+        $encrypted_amount = encryptData($amount);
+        $encrypted_ref_number = encryptData($ref_number);
+        $encrypted_activity = encryptData('Requested a Barangay Clearance');
+        $encrypted_notification_message = encryptData("New Barangay Clearance request submitted by " . strtoupper($full_name) . " Email: " . strtoupper($email) . ". Please review and process the request.");
 
-        // Log the request
-        $log_stmt = $connection->prepare("INSERT INTO `resident_request_logs` 
-            (`account_id`, `name`, `activity`, `activity_type`, `timestamp`) 
-            VALUES (?, ?, ?, ?, NOW())");
-        $log_stmt->execute([$user_id, $full_name, 'Requested a Barangay Clearance', 'Barangay Clearance']);
+        // Insert into file_request
+        $insert = $connection->prepare("INSERT INTO `file_request` (`user_id`, `name`, `date_of_birth`, `email`, `amount`, `transaction_type`, `transaction_status`, `date_submitted`, `ref_number`) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)");
+        $insert->execute([$user_id, $encrypted_name, $dob, $email, $encrypted_amount, $request_type, $status, $encrypted_ref_number]);
 
-        // Create official notification
-        $notification_message = "New Barangay Clearance request submitted by " . strtoupper($full_name) . 
-            " Email: " . strtoupper($email) . ". Please review and process the request.";
-        $insert_notification = $connection->prepare("INSERT INTO `official_notifications` 
-            (`resident_name`, `message`, `is_read`, `created_at`) VALUES (?, ?, '0', NOW())");
-        $insert_notification->execute([$full_name, $notification_message]);
+        // Insert into logs
+        $log_stmt = $connection->prepare("INSERT INTO `resident_request_logs` (`account_id`, `name`, `activity`, `activity_type`, `timestamp`) VALUES (?, ?, ?, ?, NOW())");
+        $log_stmt->execute([$user_id, $encrypted_name, $encrypted_activity, 'Barangay Clearance']);
 
-        // Send email notifications to all officials and admins (user_type 2 or 3)
-        $officials_stmt = $connection->prepare("SELECT first_name, last_name, email FROM `accounts` WHERE user_type IN ('2', '3')");
-        $officials_stmt->execute();
-        $officials = $officials_stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Insert notification record for officials
+        $insert_notification = $connection->prepare("INSERT INTO `official_notifications` (`resident_name`, `message`, `is_read`, `created_at`) VALUES (?, ?, '0', NOW())");
+        $insert_notification->execute([$encrypted_name, $encrypted_notification_message]);
 
-        foreach ($officials as $official) {
-            $officialName = $official['first_name'] . ' ' . $official['last_name'];
-            $officialEmail = $official['email'];
-            sendEmail_notification($officialName, $officialEmail, $full_name, $email, $ref_number);
+        // Send email notifications to all officials and admins
+        $get_users = $connection->query("SELECT first_name, email FROM `accounts` WHERE user_type IN ('2', '3')");
+        while ($user = $get_users->fetch(PDO::FETCH_ASSOC)) {
+            sendEmail_notification($user['first_name'], $user['email'], $full_name, $email, $ref_number);
         }
 
-        // SweetAlert success message
         echo "<script>
             Swal.fire({
                 icon: 'success',
                 title: 'Success!',
-                text: 'Your Barangay Clearance request has been submitted successfully.',
+                text: 'Your request has been submitted successfully.',
                 showConfirmButton: false,
-                timer: 1800
+                timer: 1500
             }).then(() => {
                 window.location.href = 'barangay_clearance.php';
             });
@@ -144,10 +138,10 @@
                     <div class="card-body text-center">
                         <img src="../components/img/undraw_profile_1.svg" alt="avatar"
                             class="rounded-circle img-fluid mb-3" style="width: 120px;">
-                        <h5 class="mb-1"><?php echo ($account['first_name'] . ' ' . $account['last_name']); ?></h5>
+                        <h5 class="mb-1"><?php echo (decryptData($account['first_name'])) . ' ' . (decryptData($account['last_name'])); ?></h5>
                         <p class="text-muted mb-1"><?php echo ($account['email']); ?></p>
                         <p class="text-muted mb-2">
-                            <?php echo isset($account['address']) ? ($account['address']) : 'No address provided'; ?>
+                            <?php echo isset($account['purok']) ? (decryptData($account['purok'])) : 'No purok provided'; ?>
                         </p>
                         <hr>
                         <div class="d-flex justify-content-center align-items-center">
@@ -178,7 +172,7 @@
                                 </div>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control" id="full_name" name="full_name" 
-                                        value="<?php echo ($account['first_name'] . ' ' . $account['last_name']); ?>" required>
+                                        value="<?php echo (decryptData($account['first_name'])) . ' ' . (decryptData($account['last_name'])); ?>" required>
                                 </div>
                             </div>
 

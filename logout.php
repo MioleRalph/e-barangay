@@ -3,7 +3,12 @@
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
 
+    // Database connection
     include 'connection.php';
+    
+    // Include encryption functions
+    include 'encryption.php'; 
+
     session_start();
 
     // Check if user is logged in
@@ -25,15 +30,16 @@
 
             $name = $user['first_name'] . " " . $user['last_name'];
             $email = $user['email'];
-            $user_type = $user['user_type']; // ID from accounts.user_type
-            $activity_type = 'Logout'; // Fixed text for activity type
+            $user_type = $user['user_type'];
+            $activity_type = 'Logout';
+
+            $encrypted_name = encryptData($name);
+            $encrypted_activity_type = encryptData($activity_type);
 
             // Insert logout activity log
-            $log_stmt = $connection->prepare("
-                INSERT INTO `logs` (`user_id`, `name`, `email`, `activity_type`, `user_type`, `timestamp`)
-                VALUES (?, ?, ?, ?, ?, NOW())
-            ");
-            $log_stmt->execute([$user_id, $name, $email, $activity_type, $user_type]);
+            $log_stmt = $connection->prepare("INSERT INTO `logs` (`user_id`, `name`, `email`, `activity_type`, `user_type`, `timestamp`)
+                VALUES (?, ?, ?, ?, ?, NOW())");
+            $log_stmt->execute([$user_id, $encrypted_name, $email, $encrypted_activity_type, $user_type]);
         } else {
             // User not found in accounts table
             echo "User not found.";

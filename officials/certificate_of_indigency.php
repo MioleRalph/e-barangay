@@ -104,9 +104,13 @@
                     exit();
                 }
 
-                // Log the approval
-                $log_activity = $connection->prepare("INSERT INTO `official_requests_logs` (`approved_id`, `resident_id`, `resident_name`, `approved_by`, `activity`, `timestamp`) VALUES (?, ?, ?, ?, ?, NOW())");
-                $log_activity->execute([$approved_id, $aid_request['user_id'], $aid_request['name'], $_SESSION['full_name'], 'Certificate of Indigency Approved']);
+                $activity_text = 'Certificate of Indigency Approved';
+                $encrypted_activity = encryptData($activity_text);
+
+                $log = $connection->prepare("INSERT INTO `official_requests_logs`
+                    (`approved_id`, `resident_id`, `resident_name`, `approved_by`, `activity`, `timestamp`)
+                    VALUES (?, ?, ?, ?, ?, NOW())");
+                $log->execute([$approved_id, $request['user_id'], $request['name'], $_SESSION['full_name'], $encrypted_activity]);
 
                 // Insert notification
                 $notif = $connection->prepare("INSERT INTO `notifications` (`resident_id`, `message`, `is_read`, `resident_type`, `created_at`) VALUES (?, ?, '0', 'null', NOW())");
@@ -144,9 +148,13 @@
                     exit();
                 }
 
-                // Log the rejection
-                $log_activity = $connection->prepare("INSERT INTO `official_requests_logs` (`approved_id`, `resident_id`, `resident_name`, `approved_by`, `activity`, `timestamp`) VALUES (?, ?, ?, ?, ?, NOW())");
-                $log_activity->execute([$reject_official_id, $aid_request['user_id'], $aid_request['name'], $_SESSION['full_name'], 'Certificate of Indigency Rejected']);
+            $activity_text = 'Certificate of Indigency Rejected';
+            $encrypted_activity = encryptData($activity_text);
+
+            $log = $connection->prepare("INSERT INTO `official_requests_logs`
+                (`approved_id`, `resident_id`, `resident_name`, `approved_by`, `activity`, `timestamp`)
+                VALUES (?, ?, ?, ?, ?, NOW())");
+            $log->execute([$reject_official_id, $request['user_id'], $request['name'], $_SESSION['full_name'], $encrypted_activity]);
 
                 // Insert notification
                 $notif = $connection->prepare("INSERT INTO `notifications` (`resident_id`, `message`, `is_read`, `resident_type`, `created_at`) VALUES (?, ?, '0', 'null', NOW())");

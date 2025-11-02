@@ -54,8 +54,8 @@ echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
                         <tr>
                             <td><?php echo $count++; ?></td>
                             <td><?php echo ($logs['approved_by']); ?></td>
-                            <td><?php echo ($logs['resident_name']); ?></td>
-                            <td><?php echo ($logs['activity']); ?></td>
+                            <td><?php echo (decryptData($logs['resident_name'])); ?></td>
+                            <td><?php echo (decryptData($logs['activity'])); ?></td>
                             <td>
                                 <span class="text-muted">
                                     <?php echo date('F j, Y g:i A', strtotime($logs['timestamp'])); ?>

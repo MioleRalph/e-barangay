@@ -128,7 +128,7 @@ if (isset($_POST['approve_request'])) {
 
     $update = $connection->prepare("UPDATE `accounts` SET `approval_status`='approved' WHERE `account_id`=?");
     if ($update->execute([$approve_id])) {
-        sendAccountStatusEmail($account['first_name'], $account['email'], 'approved');
+        sendAccountStatusEmail((decryptData($account['first_name'])), $account['email'], 'approved');
         echo "<script>
             Swal.fire({icon:'success',title:'Approved',text:'Account has been approved.',showConfirmButton:false,timer:1500})
             .then(()=>{window.location.href='pending_registration.php';});
@@ -152,7 +152,7 @@ if (isset($_POST['reject_request'])) {
 
     $update = $connection->prepare("UPDATE `accounts` SET `approval_status`='rejected' WHERE `account_id`=?");
     if ($update->execute([$reject_id])) {
-        sendAccountStatusEmail($account['first_name'], $account['email'], 'rejected');
+        sendAccountStatusEmail((decryptData($account['first_name'])), $account['email'], 'rejected');
         echo "<script>
             Swal.fire({icon:'success',title:'Rejected',text:'Account has been rejected.',showConfirmButton:false,timer:1500})
             .then(()=>{window.location.href='pending_registration.php';});
@@ -176,7 +176,7 @@ if (isset($_POST['delete_request'])) {
 
     $delete = $connection->prepare("DELETE FROM `accounts` WHERE `account_id`=?");
     if ($delete->execute([$delete_id])) {
-        sendAccountStatusEmail($account['first_name'], $account['email'], 'deleted');
+        sendAccountStatusEmail((decryptData($account['first_name'])), $account['email'], 'deleted');
         echo "<script>
             Swal.fire({icon:'success',title:'Deleted',text:'Account has been deleted.',showConfirmButton:false,timer:1500})
             .then(()=>{window.location.href='pending_registration.php';});
@@ -231,7 +231,7 @@ if (isset($_POST['delete_request'])) {
                     ?>
                         <tr>
                             <td><?php echo $count++; ?></td>
-                            <td><?php echo ($pending['first_name'] . ' ' . $pending['last_name']); ?></td>
+                            <td><?php echo (decryptData($pending['first_name'])) . ' ' . (decryptData($pending['last_name'])); ?></td>
                             <td><?php echo date('F j, Y g:i A', strtotime($pending['date_of_birth'])); ?></td>
                             <td><?php echo ($pending['email']); ?></td>
                             <td><?php echo date('F j, Y g:i A', strtotime($pending['date_registered'])); ?></td>

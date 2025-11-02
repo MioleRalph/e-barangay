@@ -41,11 +41,12 @@
             $profilePic = $account['profile_pic']; // Keep the existing profile picture if no new file is uploaded
         }
 
-        $f_name = $_POST['f_name'];
-        $l_name = $_POST['l_name'];
+        $f_name = encryptData($_POST['f_name']);
+        $l_name = encryptData($_POST['l_name']);
+        $contact_number = encryptData($_POST['contact_number']);
+        $purok = encryptData($_POST['purok']);
+
         $email = $_POST['email'];
-        $contact_number = $_POST['contact_number'];
-        $purok = $_POST['purok'];
         $dob = $_POST['birthdate'];
     
         if ($file) {
@@ -94,9 +95,9 @@
                     <div class="card-body text-center">
                         <img src="<?php echo "../uploads/" . $account['profile_pic']; ?>" alt="avatar"
                             class="rounded-circle img-fluid" style="width: 150px;">
-                        <h5 class="my-3"><?php echo ($account['first_name'] . ' ' . $account['last_name']); ?></h5>
+                        <h5 class="my-3"><?php echo (decryptData($account['first_name'])) . ' ' . (decryptData($account['last_name'])); ?></h5>
                         <p class="text-muted mb-1"><?php echo ($account['email']); ?></p>
-                        <p class="text-muted mb-4"><?php echo ($account['purok']); ?></p>
+                        <p class="text-muted mb-4"><?php echo (decryptData($account['purok'])); ?></p>
                         <div class="d-flex justify-content-center mb-2">
                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#profileModal">
                                 Edit Profile
@@ -115,7 +116,7 @@
                                 <p class="mb-0">Full Name</p>
                             </div>
                             <div class="col-sm-9">
-                                <p class="text-muted mb-0"><?php echo ($account['first_name'] . ' ' . $account['last_name']); ?></p>
+                                <p class="text-muted mb-0"><?php echo (decryptData($account['first_name'])) . ' ' . (decryptData($account['last_name'])); ?></p>
                             </div>
                         </div>
                         <hr>
@@ -137,7 +138,7 @@
                                 <p class="mb-0">Mobile</p>
                             </div>
                             <div class="col-sm-9">
-                                <p class="text-muted mb-0"><?php echo ($account['contact_number']); ?></p>
+                                <p class="text-muted mb-0"><?php echo (decryptData($account['contact_number'])); ?></p>
                             </div>
                         </div>
                         <hr>
@@ -167,7 +168,7 @@
                                 <p class="mb-0">Purok</p>
                             </div>
                             <div class="col-sm-9">
-                                <p class="text-muted mb-0"><?php echo ($account['purok']); ?></p>
+                                <p class="text-muted mb-0"><?php echo (decryptData($account['purok'])); ?></p>
                             </div>
                         </div>
                     </div>
@@ -200,11 +201,11 @@
                     <div class="row">
                         <div class="col">
                             <label for="f_name">First Name</label>
-                            <input type="text" id="f_name" name="f_name" class="form-control" value="<?php echo ($account['first_name']); ?>" placeholder="First name">
+                            <input type="text" id="f_name" name="f_name" class="form-control" value="<?php echo (decryptData($account['first_name'])); ?>" placeholder="First name">
                         </div>
                         <div class="col">
                             <label for="l_name">Last Name</label>
-                            <input type="text" id="l_name" name="l_name" class="form-control" value="<?php echo ($account['last_name']); ?>" placeholder="Last name">
+                            <input type="text" id="l_name" name="l_name" class="form-control" value="<?php echo (decryptData($account['last_name'])); ?>" placeholder="Last name">
                         </div>
                     </div>
 
@@ -218,7 +219,7 @@
                     <div class="form-group">
                         <label for="contact_number">Mobile</label>
                         <input type="number" class="form-control" id="contact_number" name="contact_number" 
-                            value="<?php echo ($account['contact_number']); ?>" 
+                            value="<?php echo (decryptData($account['contact_number'])); ?>" 
                             maxlength="11" 
                             oninput="if(this.value.length > 11) this.value = this.value.slice(0,11);" 
                             pattern="\d{11}" 
@@ -234,7 +235,7 @@
                     <!-- Purok Input -->
                     <div class="form-group">
                         <label for="purok">Purok</label>
-                        <input type="text" class="form-control" id="purok" name="purok" value="<?php echo ($account['purok']); ?>">
+                        <input type="text" class="form-control" id="purok" name="purok" value="<?php echo (decryptData($account['purok'])); ?>">
                     </div>
 
                     <!-- Password Input -->
