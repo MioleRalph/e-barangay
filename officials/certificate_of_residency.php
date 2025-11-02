@@ -1,215 +1,190 @@
 <?php
-    include '../includes/official/official_sidebar.php';
+include '../includes/official/official_sidebar.php';
+echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
 
-    // Use a prepared statement to fetch logs
-    $query = $connection->prepare("SELECT * FROM `file_request` WHERE `transaction_type` = ?");
-    $query->execute(['Certificate of Residency']);
-    $certificate_of_residency_requests = $query->fetchAll(PDO::FETCH_ASSOC);
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-    echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
+require '../PHPMailer/src/Exception.php';
+require '../PHPMailer/src/PHPMailer.php';
+require '../PHPMailer/src/SMTP.php';
 
-    // Approve Aid Request
-    if (isset($_POST['approve_request'])) {
-        $approve_id = $_POST['approve_id'];
+// Function: Send email to resident about status change
+function sendCertificateEmail($residentName, $residentEmail, $status)
+{
+    $mail = new PHPMailer(true);
+    try {
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.hostinger.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = 'maujo_malitbog@e-barangay.online';
+        $mail->Password   = 'barangayQ2001@';
+        $mail->SMTPSecure = 'ssl';
+        $mail->Port       = 465;
 
-        $verify_approve = $connection->prepare("SELECT * FROM `file_request` WHERE id = ?");
-        $verify_approve->execute([$approve_id]);
+        $mail->setFrom('maujo_malitbog@e-barangay.online', 'E-Barangay Maujo, Malitbog');
+        $mail->addAddress($residentEmail, $residentName);
 
-        if ($verify_approve->rowCount() > 0) {
-            $aid_request = $verify_approve->fetch(PDO::FETCH_ASSOC);
+        switch (strtolower($status)) {
+            case 'approved':
+                $subject = "Your Certificate of Residency Request Has Been Approved";
+                $message = "
+                    <h3>Good news, $residentName!</h3>
+                    <p>Your request for a <strong>Certificate of Residency</strong> has been <strong>approved</strong>.</p>
+                    <p>You can now visit the barangay office to claim your certificate or check your E-Barangay account for further instructions.</p>
+                ";
+                break;
 
-            if (!isset($aid_request) || empty($aid_request)) {
-                echo "<script>
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Certificate of Residency request data is not set or invalid.'
-                    });
-                </script>";
-                exit();
-            }
+            case 'rejected':
+                $subject = "Your Certificate of Residency Request Has Been Rejected";
+                $message = "
+                    <h3>Hello $residentName,</h3>
+                    <p>We regret to inform you that your request for a <strong>Certificate of Residency</strong> has been <strong>rejected</strong>.</p>
+                    <p>Please contact your barangay office if you have questions or wish to reapply.</p>
+                ";
+                break;
 
-            $update_status = $connection->prepare("UPDATE `file_request` SET `transaction_status` = 'approved' WHERE id = ?");
-            if ($update_status->execute([$approve_id])) {
-                // Ensure approved_id is not null
-                $approved_id = $user_id;
-                if (empty($approved_id)) {
-                    echo "<script>
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Approved ID cannot be null.'
-                        });
-                    </script>";
-                    exit();
-                }
-
-                // Find the correct request from the list using approve_id
-                $account_id = null;
-                $resident_name = null;
-                foreach ($certificate_of_residency_requests as $req) {
-                    if ($req['id'] == $approve_id) {
-                        $account_id = $req['user_id'];
-                        $resident_name = $req['name'];
-                        break;
-                    }
-                }
-                if (empty($account_id) || empty($resident_name)) {
-                    echo '<script>Swal.fire({icon: "error", title: "Error", text: "Resident information is missing or invalid."});</script>';
-                    exit();
-                }
-                // Log the approval
-                $log_activity = $connection->prepare("INSERT INTO `official_requests_logs` (`approved_id`, `resident_id`, `resident_name`, `approved_by`, `activity`, `timestamp`) VALUES (?, ?, ?, ?, ?, NOW())");
-                $log_activity->execute([$approved_id, $account_id, $resident_name, $_SESSION['full_name'], 'Request of Certificate of Residency Approved']);
-
-
-                // Insert notification for the resident
-                $notification_message = "Your Certificate of Residency request has been approved.";
-                $insert_notification = $connection->prepare("INSERT INTO `notifications` (`resident_id`, `message`, `is_read`, `resident_type`, `created_at`) VALUES (?, ?, '0', 'null', NOW())");
-                $insert_notification->execute([$account_id, $notification_message]);
-
-                echo "<script>
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Approved!',
-                        text: 'Certificate of Residency request has been approved successfully.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        window.location.href = 'certificate_of_residency.php';
-                    });
-                </script>";
-            } else {
-                echo "<script>
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: 'Error approving Certificate of Residency request.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                </script>";
-            }
-        } else {
-            echo "<script>
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Warning!',
-                    text: 'Certificate of Residency request not found!',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            </script>";
+            default:
+                return;
         }
+
+        $email_template = "
+            <div style='font-family:Arial,sans-serif;background:#f4f6f8;padding:40px 0;'>
+                <table align='center' width='100%' cellpadding='0' cellspacing='0' 
+                style='max-width:600px;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.05);'>
+                    <tr>
+                        <td style='background:#4e73df;padding:24px 0;border-radius:8px 8px 0 0;text-align:center;'>
+                            <img src='https://e-barangay.online/components/img/stock_image/brgy_logo_nobg.jpeg' alt='E-Barangay Logo' width='110'>
+                            <h2 style='color:#fff;margin:0;'>E-Barangay Maujo, Malitbog</h2>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style='padding:32px 30px;color:#333;font-size:15px;line-height:1.6;'>$message</td>
+                    </tr>
+                    <tr>
+                        <td style='background:#f4f6f8;padding:18px 30px;border-radius:0 0 8px 8px;text-align:center;color:#aaa;font-size:13px;'>
+                            &copy; " . date('Y') . " E-Barangay Maujo, Malitbog. All rights reserved.
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        ";
+
+        $mail->isHTML(true);
+        $mail->Subject = $subject;
+        $mail->Body = $email_template;
+        $mail->AltBody = strip_tags($message);
+
+        $mail->send();
+    } catch (Exception $e) {
+        error_log("Email not sent to $residentEmail. Error: {$mail->ErrorInfo}");
+    }
+}
+
+// Fetch all Certificate of Residency requests
+$query = $connection->prepare("SELECT * FROM `file_request` WHERE `transaction_type` = ?");
+$query->execute(['Certificate of Residency']);
+$certificate_of_residency_requests = $query->fetchAll(PDO::FETCH_ASSOC);
+
+// Approve Request
+if (isset($_POST['approve_request'])) {
+    $approve_id = $_POST['approve_id'];
+
+    $verify = $connection->prepare("SELECT * FROM `file_request` WHERE id = ?");
+    $verify->execute([$approve_id]);
+    $request = $verify->fetch(PDO::FETCH_ASSOC);
+
+    if (!$request) {
+        echo "<script>Swal.fire({icon:'warning',title:'Not found',text:'Certificate request not found.'});</script>";
+        exit();
     }
 
-    // Reject Aid Request
-    if (isset($_POST['reject_request'])) {
-        $reject_id = $_POST['reject_id'];
-
-        $verify_reject = $connection->prepare("SELECT * FROM `file_request` WHERE id = ?");
-        $verify_reject->execute([$reject_id]);
-
-        if ($verify_reject->rowCount() > 0) {
-            $aid_request = $verify_reject->fetch(PDO::FETCH_ASSOC);
-
-            if (!isset($aid_request) || empty($aid_request)) {
-                echo "<script>
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Certificate of Residency request data is not set or invalid.'
-                        });
-                    </script>";
-                exit();
-            }
-
-            $update_status = $connection->prepare("UPDATE `file_request` SET `transaction_status` = 'Rejected' WHERE id = ?");
-            if ($update_status->execute([$reject_id])) {
-                // Ensure reject_id is not null
-                $reject_id = $user_id;
-                if (empty($reject_id)) {
-                    echo "<script>
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'Approved ID cannot be null.'
-                            });
-                        </script>";
-                    exit();
-                }
-
-                $account_id = null;
-                $resident_name = null;
-                foreach ($certificate_of_residency_requests as $req) {
-                    if ($req['id'] == $_POST['reject_id']) {
-                        $account_id = $req['user_id'];
-                        $resident_name = $req['name'];
-                        break;
-                    }
-                }
-                if (empty($account_id) || empty($resident_name)) {
-                    echo '<script>Swal.fire({icon: "error", title: "Error", text: "Resident information is missing or invalid."});</script>';
-                    exit();
-                }
-                // Log the rejection
-                $log_activity = $connection->prepare("INSERT INTO `official_requests_logs` (`approved_id`, `resident_id`, `resident_name`, `approved_by`, `activity`, `timestamp`) VALUES (?, ?, ?, ?, ?, NOW())");
-                $log_activity->execute([$reject_id,  $account_id, $resident_name, $_SESSION['full_name'], 'Financial Assistance Rejected']);
-
-
-                // Insert notification for the resident
-                $notification_message = "Your Certificate of Residency request has been rejected.";
-                $insert_notification = $connection->prepare("INSERT INTO `notifications` (`resident_id`, `message`, `is_read`, `resident_type`, `created_at`) VALUES (?, ?, '0', 'null', NOW())");
-                $insert_notification->execute([$account_id, $notification_message]);
-
-                echo "<script>
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Rejected!',
-                            text: 'Certificate of Residency request has been rejected successfully.',
-                            showConfirmButton: false,
-                            timer: 1500
-                        }).then(() => {
-                            window.location.href = 'certificate_of_residency.php';
-                        });
-                    </script>";
-            } else {
-                echo "<script>
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error!',
-                            text: 'Error rejecting Certificate of Residency request.',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                    </script>";
-            }
-        } else {
-            echo "<script>
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Warning!',
-                        text: 'Certificate of Residency request not found!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                </script>";
+    $update = $connection->prepare("UPDATE `file_request` SET `transaction_status` = 'Approved' WHERE id = ?");
+    if ($update->execute([$approve_id])) {
+        $approved_id = $user_id ?? null;
+        if (empty($approved_id)) {
+            echo "<script>Swal.fire({icon:'error',title:'Error',text:'Official ID missing.'});</script>";
+            exit();
         }
+
+        // Log the activity
+        $log = $connection->prepare("INSERT INTO `official_requests_logs`
+            (`approved_id`, `resident_id`, `resident_name`, `approved_by`, `activity`, `timestamp`)
+            VALUES (?, ?, ?, ?, ?, NOW())");
+        $log->execute([$approved_id, $request['user_id'], $request['name'], $_SESSION['full_name'], 'Certificate of Residency Approved']);
+
+        // Insert notification
+        $notif = $connection->prepare("INSERT INTO `notifications`
+            (`resident_id`, `message`, `is_read`, `resident_type`, `created_at`)
+            VALUES (?, ?, '0', 'null', NOW())");
+        $notif->execute([$request['user_id'], "Your Certificate of Residency request has been approved."]);
+
+        // Send email
+        sendCertificateEmail($request['name'], $request['email'], 'approved');
+
+        echo "<script>
+            Swal.fire({icon:'success',title:'Approved!',text:'Request has been approved.',showConfirmButton:false,timer:1500})
+            .then(()=>{window.location.href='certificate_of_residency.php';});
+        </script>";
+        exit();
+    }
+}
+
+// Reject Request
+if (isset($_POST['reject_request'])) {
+    $reject_id = $_POST['reject_id'];
+
+    $verify = $connection->prepare("SELECT * FROM `file_request` WHERE id = ?");
+    $verify->execute([$reject_id]);
+    $request = $verify->fetch(PDO::FETCH_ASSOC);
+
+    if (!$request) {
+        echo "<script>Swal.fire({icon:'warning',title:'Not found',text:'Certificate request not found.'});</script>";
+        exit();
     }
 
+    $update = $connection->prepare("UPDATE `file_request` SET `transaction_status` = 'Rejected' WHERE id = ?");
+    if ($update->execute([$reject_id])) {
+        $reject_official_id = $user_id ?? null;
+        if (empty($reject_official_id)) {
+            echo "<script>Swal.fire({icon:'error',title:'Error',text:'Official ID missing.'});</script>";
+            exit();
+        }
+
+        // Log the activity
+        $log = $connection->prepare("INSERT INTO `official_requests_logs`
+            (`approved_id`, `resident_id`, `resident_name`, `approved_by`, `activity`, `timestamp`)
+            VALUES (?, ?, ?, ?, ?, NOW())");
+        $log->execute([$reject_official_id, $request['user_id'], $request['name'], $_SESSION['full_name'], 'Certificate of Residency Rejected']);
+
+        // Insert notification
+        $notif = $connection->prepare("INSERT INTO `notifications`
+            (`resident_id`, `message`, `is_read`, `resident_type`, `created_at`)
+            VALUES (?, ?, '0', 'null', NOW())");
+        $notif->execute([$request['user_id'], "Your Certificate of Residency request has been rejected."]);
+
+        // Send email
+        sendCertificateEmail($request['name'], $request['email'], 'rejected');
+
+        echo "<script>
+            Swal.fire({icon:'success',title:'Rejected!',text:'Request has been rejected.',showConfirmButton:false,timer:1500})
+            .then(()=>{window.location.href='certificate_of_residency.php';});
+        </script>";
+        exit();
+    }
+}
 ?>
 
-<!-- Page Heading -->
+<!-- PAGE CONTENT -->
 <h1 class="h3 mb-2 text-gray-800">Certificate of Residency Requests</h1>
 <p class="mb-4">
-    Below is a list of all Certificate of Residency requests submitted by residents. You can review, approve, or reject each request directly from this table. For record-keeping, you may also download the full list as a PDF.
+    Below is a list of all Certificate of Residency requests submitted by residents. You can approve or reject each request directly.
 </p>
 
-<!-- DataTales Example -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-users"></i> Certificate of Residency Requests
+            <i class="fas fa-file-alt"></i> Certificate of Residency Requests
         </h6>
         <a href="../pdf/pdf_certificate_of_residency.php" class="btn btn-primary btn-sm">
             <i class="fas fa-file-export"></i> PDF Download
@@ -233,52 +208,31 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tfoot class="thead-dark">
-                    <tr>
-                    <th>#</th>
-                        <th>Name</th>
-                        <th>Account ID</th>
-                        <th>Date Of Birth</th>
-                        <th>Email</th>
-                        <th>Amount</th>
-                        <th>Transaction Type</th>
-                        <th>Status</th>
-                        <th>Reference #</th>
-                        <th>Timestamp</th>
-                        <th>Action</th>
-                    </tr>
-                </tfoot>
                 <tbody>
-                    <?php
-                    $count = 1;
-                    foreach ($certificate_of_residency_requests as $logs):
-                    ?>
+                    <?php $count = 1;
+                    foreach ($certificate_of_residency_requests as $req): ?>
                         <tr>
-                            <td><?php echo $count++; ?></td>
-                            <td><?php echo ($logs['name']); ?></td>
-                            <td><?php echo ($logs['user_id']); ?></td>
-                            <td><?php echo date('F j, Y g:i A', strtotime($logs['date_of_birth'])); ?></td>
-                            <td><?php echo ($logs['email']); ?></td>
-                            <td><?php echo ($logs['amount']); ?></td>
-                            <td><?php echo ($logs['transaction_type']); ?></td>
-                            <td><?php echo ($logs['transaction_status']); ?></td>
-                            <td><?php echo ($logs['ref_number']); ?></td>
-                            <td><?php echo date('F j, Y g:i A', strtotime($logs['date_submitted'])); ?></td>
+                            <td><?= $count++; ?></td>
+                            <td><?= htmlspecialchars($req['name']); ?></td>
+                            <td><?= htmlspecialchars($req['user_id']); ?></td>
+                            <td><?= date('F j, Y', strtotime($req['date_of_birth'])); ?></td>
+                            <td><?= htmlspecialchars($req['email']); ?></td>
+                            <td><?= htmlspecialchars($req['amount']); ?></td>
+                            <td><?= htmlspecialchars($req['transaction_type']); ?></td>
+                            <td><?= htmlspecialchars($req['transaction_status']); ?></td>
+                            <td><?= htmlspecialchars($req['ref_number']); ?></td>
+                            <td><?= date('F j, Y g:i A', strtotime($req['date_submitted'])); ?></td>
                             <td class="text-center">
                                 <div class="btn-group" role="group">
-                                    <form method="POST" action="" class="d-inline">
-                                        <input type="hidden" name="approve_id" value="<?php echo $logs['id']; ?>">
+                                    <form method="POST" class="d-inline">
+                                        <input type="hidden" name="approve_id" value="<?= $req['id']; ?>">
                                         <input type="hidden" name="approve_request" value="1">
-                                        <button type="submit" class="btn btn-success btn-sm" title="Approve">
-                                            <i class="fas fa-check"></i>
-                                        </button>
+                                        <button type="submit" class="btn btn-success btn-sm" title="Approve"><i class="fas fa-check"></i></button>
                                     </form>
-                                    <form method="POST" action="" class="d-inline">
-                                        <input type="hidden" name="reject_id" value="<?php echo $logs['id']; ?>">
+                                    <form method="POST" class="d-inline">
+                                        <input type="hidden" name="reject_id" value="<?= $req['id']; ?>">
                                         <input type="hidden" name="reject_request" value="1">
-                                        <button type="submit" class="btn btn-warning btn-sm" title="Reject">
-                                            <i class="fas fa-times"></i>
-                                        </button>
+                                        <button type="submit" class="btn btn-warning btn-sm" title="Reject"><i class="fas fa-times"></i></button>
                                     </form>
                                 </div>
                             </td>

@@ -99,7 +99,8 @@
         $purok = $_POST['purok'];
         $contact_number = $_POST['contact_number'];
         $email = $_POST['email'];
-        $account_type = $_POST['account_type'];
+        $account_type = 3;
+        $approval_status = 'approved';
         $pass = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
         $verification_token = md5(rand());
@@ -136,9 +137,9 @@
             $warning_msg[] = 'Email already taken!';
         } else {
             // Insert the new account into the database
-            $insert_user = $connection->prepare("INSERT INTO `accounts`(`account_id`, `profile_pic`, `first_name`, `last_name`, `date_of_birth`, `purok`, `contact_number`, `email`, `password`, `user_type`, `verification_token`, `verification_status`, `date_registered`) 
-                            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-            $insert_user->execute([$user_id, $fileName, $firstName, $lastName, $dob, $purok, $contact_number, $email, $pass, $account_type, $verification_token, $verification_status]);
+            $insert_user = $connection->prepare("INSERT INTO `accounts`(`account_id`, `profile_pic`, `first_name`, `last_name`, `date_of_birth`, `purok`, `contact_number`, `email`, `password`, `user_type`, `approval_status`, `verification_token`, `verification_status`, `date_registered`) 
+                            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+            $insert_user->execute([$user_id, $fileName, $firstName, $lastName, $dob, $purok, $contact_number, $email, $pass, $account_type, $approval_status, $verification_token, $verification_status]);
 
             // Send verification email
             sendEmail_verification($firstName, $email, $verification_token);

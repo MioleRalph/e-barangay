@@ -1,48 +1,131 @@
 <?php 
-
     include '../includes/resident/resident_sidebar.php'; 
     echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
 
+    // Import PHPMailer classes
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception;
+
+    // Include PHPMailer files
+    require '../PHPMailer/src/Exception.php';
+    require '../PHPMailer/src/PHPMailer.php';
+    require '../PHPMailer/src/SMTP.php';
+
+    // Function to send email to officials and admins
+    function sendEmail_notification($recipientName, $recipientEmail, $residentName, $residentEmail, $refNumber) {
+        $mail = new PHPMailer(true);
+        try {
+            $mail->isSMTP();                                     
+            $mail->Host       = 'smtp.hostinger.com';
+            $mail->SMTPAuth   = true;           
+            $mail->Username   = 'maujo_malitbog@e-barangay.online';      
+            $mail->Password   = 'barangayQ2001@';             
+            $mail->SMTPSecure = 'ssl';   
+            $mail->Port       = 465;              
+
+            $mail->setFrom('maujo_malitbog@e-barangay.online', 'E-Barangay Maujo, Malitbog');
+            $mail->addAddress($recipientEmail, $recipientName);
+
+            // Email template for officials
+            $email_template = "
+                <div style='font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 40px 0;'>
+                    <table align='center' width='100%' cellpadding='0' cellspacing='0' style='max-width: 600px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);'>
+                        <tr>
+                            <td style='background: #4e73df; padding: 24px 0; border-radius: 8px 8px 0 0; text-align: center;'>
+                                <img src='https://e-barangay.online/components/img/stock_image/brgy_logo_nobg.jpeg' alt='E-Barangay Logo' width='110' style='margin-bottom: 8px;'>
+                                <h2 style='color: #fff; margin: 0; font-size: 24px;'>E-Barangay Maujo, Malitbog</h2>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style='padding: 32px 30px 24px 30px; color: #333;'>
+                                <h3 style='margin-top: 0;'>New Certificate of Indigency Request</h3>
+                                <p style='font-size: 16px; line-height: 1.6;'>
+                                    Resident <strong>$residentName</strong> (<a href='mailto:$residentEmail'>$residentEmail</a>) has submitted a new
+                                    <strong>Certificate of Indigency</strong> request.<br><br>
+                                    Reference Number: <strong>$refNumber</strong><br>
+                                    Please review and process the request in your E-Barangay dashboard.
+                                </p>
+                                <div style='text-align: center; margin: 32px 0;'>
+                                    <a href='https://e-barangay.online/admin_login.php' 
+                                    style='background: #4e73df; color: #fff; text-decoration: none; padding: 14px 32px; border-radius: 5px; font-size: 16px; display: inline-block;'>
+                                        Go to Dashboard
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style='background: #f4f6f8; padding: 18px 30px; border-radius: 0 0 8px 8px; text-align: center; color: #aaa; font-size: 13px;'>
+                                &copy; " . date('Y') . " E-Barangay Maujo, Malitbog. All rights reserved.
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            ";
+
+            $mail->isHTML(true);
+            $mail->Subject = "New Certificate of Indigency Request - $residentName";
+            $mail->Body    = $email_template;
+            $mail->AltBody = "Resident $residentName ($residentEmail) submitted a Certificate of Indigency request. Ref#: $refNumber";
+
+            $mail->send();
+        } catch (Exception $e) {
+            error_log("Email could not be sent to $recipientEmail. Error: {$mail->ErrorInfo}");
+        }
+    }
+
+    // Fetch logged-in resident account info
     $select_account = $connection->prepare("SELECT * FROM `accounts` WHERE account_id = ? LIMIT 1");
     $select_account->execute([$user_id]);
     $account = $select_account->fetch(PDO::FETCH_ASSOC);
 
-        if (isset($_POST['submit'])) {
+    if (isset($_POST['submit'])) {
         $full_name = $_POST['full_name'];
         $email = $_POST['email'];
         $dob = $_POST['dob'];
         $amount = 0; 
         $status = 'Pending';
         $request_type = 'Certificate of Indigency';
-        $ref_number = 'No reference #';
+        $ref_number = 'N/A';
 
-        // Correct order: name, date_of_birth, email, amount, date_submitted
-        $insert = $connection->prepare("INSERT INTO `file_request` (`user_id`, `name`, `date_of_birth`, `email`, `amount`, `transaction_type`, `transaction_status`, `date_submitted`, `ref_number`) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)");
+        // Insert into file_request
+        $insert = $connection->prepare("INSERT INTO `file_request` 
+            (`user_id`, `name`, `date_of_birth`, `email`, `amount`, `transaction_type`, `transaction_status`, `date_submitted`, `ref_number`) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)");
         $insert->execute([$user_id, $full_name, $dob, $email, $amount, $request_type, $status, $ref_number]);
 
-        // Insert log into resident_request_logs
-        $log_stmt = $connection->prepare("INSERT INTO `resident_request_logs` (`account_id`, `name`, `activity`, `activity_type`, `timestamp`) VALUES (?, ?, ?, ?, NOW())");
+        // Insert into logs
+        $log_stmt = $connection->prepare("INSERT INTO `resident_request_logs` 
+            (`account_id`, `name`, `activity`, `activity_type`, `timestamp`) 
+            VALUES (?, ?, ?, ?, NOW())");
         $log_stmt->execute([$user_id, $full_name, 'Requested a Certificate of Indigency', 'Certificate of Indigency']);
 
-
-        // Insert notification for officials
-        $notification_message = "New Certificate of Indigency request submitted by " . strtoupper($full_name) . " Email: " . strtoupper($email) . ". Please review and process the request.";
-        $insert_notification = $connection->prepare("INSERT INTO `official_notifications` (`resident_name`, `message`, `is_read`, `created_at`) VALUES (?, ?, '0', NOW())");
+        // Insert notification record for officials
+        $notification_message = "New Certificate of Indigency request submitted by " . strtoupper($full_name) . 
+            " Email: " . strtoupper($email) . ". Please review and process the request.";
+        $insert_notification = $connection->prepare("INSERT INTO `official_notifications` 
+            (`resident_name`, `message`, `is_read`, `created_at`) 
+            VALUES (?, ?, '0', NOW())");
         $insert_notification->execute([$full_name, $notification_message]);
-        
-        echo "<script>
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: 'Your request has been submitted successfully.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        window.location.href = 'certificate_of_indigency.php';
-                    });
-                </script>";
-    }
 
+        // Send email notifications to all officials and admins
+        $get_users = $connection->query("SELECT first_name, email FROM `accounts` WHERE user_type IN ('2', '3')");
+        while ($user = $get_users->fetch(PDO::FETCH_ASSOC)) {
+            sendEmail_notification($user['first_name'], $user['email'], $full_name, $email, $ref_number);
+        }
+
+        // SweetAlert Success Message
+        echo "<script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Your request has been submitted successfully.',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                window.location.href = 'certificate_of_indigency.php';
+            });
+        </script>";
+    }
 ?>
 
 <section>
@@ -63,40 +146,45 @@
                     </div>
                 </div>
             </div>
+
             <div class="col-lg-8">
                 <div class="card mb-4">
                     <div class="card-body">
-                        <form action="" method="POST" enctype="multipart/form-data">
-                            <!-- name row -->
+                        <form action="" method="POST">
+                            <!-- Name -->
                             <div class="row mb-3">
                                 <div class="col-sm-3">
                                     <label for="full_name" class="mb-0">Full Name</label>
                                 </div>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="full_name" name="full_name" value="<?php echo ($account['first_name'] . ' ' . $account['last_name']); ?>" required>
+                                    <input type="text" class="form-control" id="full_name" name="full_name" 
+                                        value="<?php echo ($account['first_name'] . ' ' . $account['last_name']); ?>" required>
                                 </div>
                             </div>
 
-                            <!-- email row -->
+                            <!-- Email -->
                             <div class="row mb-3">
                                 <div class="col-sm-3">
                                     <label for="email" class="mb-0">Email</label>
                                 </div>
                                 <div class="col-sm-9">
-                                    <input type="email" class="form-control" id="email" name="email" value="<?php echo $account['email']; ?>" required>
+                                    <input type="email" class="form-control" id="email" name="email" 
+                                        value="<?php echo $account['email']; ?>" required>
                                 </div>
                             </div>
 
-                            <!-- mobile number row -->
+                            <!-- Date of Birth -->
                             <div class="row mb-3">
                                 <div class="col-sm-3">
                                     <label for="dob" class="mb-0">Date Of Birth</label>
                                 </div>
                                 <div class="col-sm-9">
-                                    <input type="date" class="form-control" id="dob" name="dob" value="<?php echo isset($account['date_of_birth']) ? ($account['date_of_birth']) : 'No date provided'; ?>" required>
+                                    <input type="date" class="form-control" id="dob" name="dob" 
+                                        value="<?php echo isset($account['date_of_birth']) ? ($account['date_of_birth']) : ''; ?>" required>
                                 </div>
                             </div>
 
+                            <!-- Submit -->
                             <div class="row">
                                 <button type="submit" name="submit" class="btn btn-primary btn-block font-weight-bold py-2 mt-4">
                                     Submit
@@ -110,8 +198,4 @@
     </div>
 </section>
 
-
 <?php include '../includes/footer.php'; ?>
-
-
-

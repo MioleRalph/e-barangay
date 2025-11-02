@@ -9,6 +9,9 @@ session_start();
 // Include the database connection
 include '../connection.php';
 
+// include encryption functions
+include '../encryption.php';
+
 
 // Check if the user is logged in
 if (isset($_COOKIE['user_id'])) {

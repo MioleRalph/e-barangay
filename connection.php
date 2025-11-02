@@ -20,4 +20,8 @@
    }else{
       $user_id = '';
    }
+
+define('ENCRYPTION_KEY', 'your-32-character-secret-key-1234');
+define('ENCRYPTION_IV', substr(hash('sha256', 'iv-for-aes-256'), 0, 16));
+
 ?>
